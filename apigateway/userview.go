@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"logic/database"
-	"logic/models"
+	"github.com/maisiesadler/theilliminationgame/database"
+	"github.com/maisiesadler/theilliminationgame/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
