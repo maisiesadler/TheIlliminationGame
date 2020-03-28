@@ -36,7 +36,6 @@ func getConnectionString() (string, error) {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config:            aws.Config{Region: aws.String(region)},
 		SharedConfigState: session.SharedConfigEnable,
-		Profile:           "illimination-deploy",
 	})
 
 	if err != nil {
