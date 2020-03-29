@@ -26,6 +26,11 @@ func ResponseSuccessfulString(body string) events.APIGatewayProxyResponse {
 	return resp
 }
 
+// ResponseUnsuccessful return response for API Gateway that allows cors
+func ResponseUnsuccessful(statusCode int) events.APIGatewayProxyResponse {
+	return ResponseUnsuccessfulString(statusCode, "")
+}
+
 // ResponseUnsuccessfulString return response for API Gateway that allows cors
 func ResponseUnsuccessfulString(statusCode int, body string) events.APIGatewayProxyResponse {
 	resp := events.APIGatewayProxyResponse{Headers: make(map[string]string)}
