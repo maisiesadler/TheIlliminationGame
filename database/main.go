@@ -33,7 +33,7 @@ func Connect() bool {
 
 func getConnectionString() (string, error) {
 	region := "eu-west-2"
-	endpoint := "ssm.eu-west-2.amazonaws.com"
+	endpoint := "http://ssm.eu-west-2.amazonaws.com"
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config:            aws.Config{Region: aws.String(region)},
 		SharedConfigState: session.SharedConfigEnable,
