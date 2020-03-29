@@ -33,11 +33,11 @@ func (coll *MongoCollection) InsertOneAndFind(ctx context.Context, document inte
 }
 
 // DeleteByID deletes a document by id
-func (coll *MongoCollection) DeleteByID(ctx context.Context, id primitive.ObjectID) error {
+func (coll *MongoCollection) DeleteByID(ctx context.Context, objID *primitive.ObjectID) error {
 
 	deleteOptions := options.Delete()
 
-	_, err := coll.MongoCollection.DeleteOne(ctx, bson.D{primitive.E{Key: "_id", Value: id}}, deleteOptions)
+	_, err := coll.MongoCollection.DeleteOne(ctx, bson.D{primitive.E{Key: "_id", Value: objID}}, deleteOptions)
 	if err != nil {
 		return err
 	}
@@ -46,12 +46,7 @@ func (coll *MongoCollection) DeleteByID(ctx context.Context, id primitive.Object
 }
 
 // UpdateByID finds and updates an object by ID
-func (coll *MongoCollection) UpdateByID(ctx context.Context, id string, obj interface{}) error {
-
-	objID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
+func (coll *MongoCollection) UpdateByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) error {
 
 	o := options.FindOneAndReplace()
 
