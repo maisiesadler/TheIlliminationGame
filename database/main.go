@@ -32,7 +32,7 @@ func Connect() bool {
 }
 
 func getConnectionString() (string, error) {
-	override := os.Getenv("illiminationmongostring=")
+	override := os.Getenv("illiminationmongostring")
 	if len(override) > 0 {
 		return override, nil
 	}
