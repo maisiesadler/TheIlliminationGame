@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -22,7 +23,6 @@ func Connect() bool {
 		return false
 	}
 	fmt.Printf("Got connection string: len=%v\n", len(connectionString))
-	fmt.Printf("Got connection string=%v\n", connectionString)
 
 	fmt.Printf("Connecting...\n")
 	connected := connect(context.Background(), connectionString)
@@ -32,6 +32,11 @@ func Connect() bool {
 }
 
 func getConnectionString() (string, error) {
+	override := os.Getenv("illiminationmongostring=")
+	if len(override) > 0 {
+		return override, nil
+	}
+
 	region := "eu-west-2"
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config:            aws.Config{Region: aws.String(region)},
@@ -53,7 +58,7 @@ func getConnectionString() (string, error) {
 		WithDecryption: &withDecryption,
 	})
 
-	fmt.Println("success")
+	fmt.Println("request complete")
 
 	if err != nil {
 		return "", err
