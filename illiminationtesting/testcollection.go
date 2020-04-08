@@ -1,4 +1,4 @@
-package tigtesting
+package illiminationtesting
 
 import (
 	"context"
