@@ -28,9 +28,10 @@ func mongoCollectionIsAnICollection() {
 
 // CreateCollection gets a wrapped reference to a mongo collection
 func CreateCollection(database string, collection string) (bool, ICollection) {
-	if mongoClient == nil {
+	if connected := Connect(); !connected {
 		return false, nil
 	}
+
 	return true, &MongoCollection{mongoClient.Database(database).Collection(collection)}
 }
 
