@@ -18,6 +18,8 @@ type ICollection interface {
 	InsertOneAndFind(ctx context.Context, document interface{}, output interface{}) (interface{}, error)
 	DeleteByID(ctx context.Context, objID *primitive.ObjectID) error
 	UpdateByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) error
+	FindByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) (interface{}, error)
+	FindOne(ctx context.Context, filter interface{}, obj interface{}) (interface{}, error)
 }
 
 func mongoCollectionIsAnICollection() {
