@@ -35,8 +35,8 @@ func CreateTestAuthorizedRequest(username string) *events.APIGatewayProxyRequest
 	return request
 }
 
-// SetUserViewOverride sets a the database package to use a TestCollection
-func SetUserViewOverride() {
+// SetUserViewTestCollectionOverride sets a the database package to use a TestCollection
+func SetUserViewTestCollectionOverride() {
 	tc := CreateTestCollection()
 	database.SetOverride("theilliminationgame", "users", tc)
 }
@@ -47,4 +47,10 @@ func SetUserViewFindOnePredicate(predicate func(*models.UserView, bson.M) bool) 
 		uv := value.(*models.UserView)
 		return predicate(uv, filter)
 	}
+}
+
+// SetGameTestCollectionOverride sets a the database package to use a TestCollection
+func SetGameTestCollectionOverride() {
+	tc := CreateTestCollection()
+	database.SetOverride("theilliminationgame", "games", tc)
 }

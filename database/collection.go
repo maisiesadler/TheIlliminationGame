@@ -44,3 +44,8 @@ func CreateCollection(database string, collection string) (bool, ICollection) {
 func UserView() (bool, ICollection) {
 	return CreateCollection("theilliminationgame", "users")
 }
+
+// Game returns an ICollection for the mongodb collection games
+func Game() (bool, ICollection) {
+	return CreateCollection("theilliminationgame", "games")
+}
