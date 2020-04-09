@@ -1,12 +1,11 @@
 package database
 
-var createOverrideFn func(string) ICollection
+var createOverrideFn func(string, string) ICollection
 
 func tryGetOverrideFor(database string, collection string) (ICollection, bool) {
-	key := database + "_" + collection
 
 	if createOverrideFn != nil {
-		override := createOverrideFn(key)
+		override := createOverrideFn(database, collection)
 		return override, true
 	}
 
@@ -14,6 +13,6 @@ func tryGetOverrideFor(database string, collection string) (ICollection, bool) {
 }
 
 // SetOverride allows an override ICollection to be set for testing
-func SetOverride(overrideFn func(string) ICollection) {
+func SetOverride(overrideFn func(string, string) ICollection) {
 	createOverrideFn = overrideFn
 }
