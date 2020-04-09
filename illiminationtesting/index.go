@@ -35,22 +35,35 @@ func CreateTestAuthorizedRequest(username string) *events.APIGatewayProxyRequest
 	return request
 }
 
-// SetUserViewTestCollectionOverride sets a the database package to use a TestCollection
-func SetUserViewTestCollectionOverride() {
-	tc := CreateTestCollection()
-	database.SetOverride("theilliminationgame", "users", tc)
+var overrides map[string]*TestCollection
+
+// SetTestCollectionOverride sets a the database package to use a TestCollection
+func SetTestCollectionOverride() {
+	database.SetOverride(overrideDb)
 }
 
 // SetUserViewFindOnePredicate overrides the logic to get the result for FindOne
-func SetUserViewFindOnePredicate(predicate func(*models.UserView, bson.M) bool) func(value interface{}, filter bson.M) bool {
-	return func(value interface{}, filter bson.M) bool {
+func SetUserViewFindOnePredicate(predicate func(*models.UserView, bson.M) bool) bool {
+	fn := func(value interface{}, filter bson.M) bool {
 		uv := value.(*models.UserView)
 		return predicate(uv, filter)
 	}
+
+	key := "theilliminationgame_users"
+
+	if val, ok := overrides[key]; ok {
+		val.findOnePredicate = fn
+		return true
+	}
+
+	return false
 }
 
-// SetGameTestCollectionOverride sets a the database package to use a TestCollection
-func SetGameTestCollectionOverride() {
-	tc := CreateTestCollection()
-	database.SetOverride("theilliminationgame", "games", tc)
+func overrideDb(database string, collection string) database.ICollection {
+	key := database + "_" + collection
+	if val, ok := overrides[key]; ok {
+		return val
+	}
+	overrides[key] = CreateTestCollection()
+	return overrides[key]
 }
