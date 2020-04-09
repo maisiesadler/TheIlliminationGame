@@ -35,7 +35,7 @@ func CreateTestAuthorizedRequest(username string) *events.APIGatewayProxyRequest
 	return request
 }
 
-var overrides map[string]*TestCollection
+var overrides = make(map[string]*TestCollection)
 
 // SetTestCollectionOverride sets a the database package to use a TestCollection
 func SetTestCollectionOverride() {
