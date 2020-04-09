@@ -28,6 +28,11 @@ func mongoCollectionIsAnICollection() {
 
 // CreateCollection gets a wrapped reference to a mongo collection
 func CreateCollection(database string, collection string) (bool, ICollection) {
+
+	if override, ok := tryGetOverrideFor(database, collection); ok {
+		return true, override
+	}
+
 	if connected := Connect(); !connected {
 		return false, nil
 	}
