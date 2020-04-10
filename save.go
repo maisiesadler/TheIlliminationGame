@@ -29,7 +29,7 @@ func (g *Game) save() bool {
 
 func (g *GameSetUp) save() bool {
 
-	ok, coll := database.Game()
+	ok, coll := database.GameSetUp()
 	if !ok {
 		return false
 	}
