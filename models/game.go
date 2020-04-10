@@ -6,6 +6,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type GameSetUp struct {
 	ID      *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Active  bool                `json:"active"`
+	Code    string              `json:"code"`
 	Options []string            `json:"options"`
 	Players []*Player           `json:"players"`
 }
