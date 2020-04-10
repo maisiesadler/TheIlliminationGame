@@ -9,6 +9,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // TestCollection wraps a map
@@ -62,17 +63,39 @@ func (coll *TestCollection) UpdateByID(ctx context.Context, objID *primitive.Obj
 	return nil
 }
 
+func (coll *TestCollection) Find(ctx context.Context, filter interface{}, findOptions *options.FindOptions, obj interface{}) (<-chan interface{}, error) {
+	if coll.findOnePredicate == nil {
+		return nil, errors.New("Call SetFindFilter")
+	}
+
+	results := make(chan interface{})
+
+	go func() {
+		defer close(results)
+
+		elementMap := filter.(bson.D).Map()
+
+		for _, v := range coll.coll {
+			if coll.findOnePredicate(v, elementMap) {
+				results <- v
+			}
+		}
+	}()
+
+	return results, nil
+}
+
 func (coll *TestCollection) FindByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) (interface{}, error) {
 	return coll.coll[*objID], nil
 }
 
-func (coll *TestCollection) SetFindOneFilter(predicate func(interface{}, bson.M) bool) {
+func (coll *TestCollection) SetFindFilter(predicate func(interface{}, bson.M) bool) {
 	coll.findOnePredicate = predicate
 }
 
 func (coll *TestCollection) FindOne(ctx context.Context, filter interface{}, obj interface{}) (interface{}, error) {
 	if coll.findOnePredicate == nil {
-		return nil, errors.New("Call SetFindOneFilter")
+		return nil, errors.New("Call SetFindFilter")
 	}
 
 	elementMap := filter.(bson.D).Map()
