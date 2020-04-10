@@ -15,6 +15,9 @@ func TestUser(name string) (*apigateway.AuthenticatedUser, error) {
 
 	request := CreateTestAuthorizedRequest("Test_" + name)
 	user, err := apigateway.GetOrCreateAuthenticatedUser(context.TODO(), request)
+	if user == nil {
+		err = user.SetNickname(context.TODO(), name)
+	}
 
 	return user, err
 }

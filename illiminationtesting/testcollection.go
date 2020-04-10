@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 
+	"github.com/maisiesadler/theilliminationgame/database"
+	"github.com/maisiesadler/theilliminationgame/models"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-
-	"github.com/maisiesadler/theilliminationgame/database"
 )
 
 // TestCollection wraps a map
@@ -28,6 +29,18 @@ func testCollectionIsAnICollection() {
 func (coll *TestCollection) InsertOne(ctx context.Context, document interface{}) (*primitive.ObjectID, error) {
 	id := primitive.NewObjectID()
 	coll.coll[id] = document
+
+	// try update id on model
+	if u, ok := document.(*models.UserView); ok {
+		u.ID = &id
+	}
+	if s, ok := document.(*models.GameSetUp); ok {
+		s.ID = &id
+	}
+	if g, ok := document.(*models.Game); ok {
+		g.ID = &id
+	}
+
 	return &id, nil
 }
 
