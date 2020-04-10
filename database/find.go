@@ -29,6 +29,18 @@ func (coll *MongoCollection) FindOne(ctx context.Context, filter interface{}, ob
 	return parseSingleResult(singleResult, obj)
 }
 
+// Find finds all matching results and returns a channel of the parsed result
+func (coll *MongoCollection) Find(ctx context.Context, filter interface{}, findOptions *options.FindOptions, obj interface{}) (<-chan interface{}, error) {
+
+	results, err := coll.MongoCollection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	r := Parse(ctx, results, obj)
+	return r, nil
+}
+
 func parseSingleResult(singleResult *mongo.SingleResult, obj interface{}) (interface{}, error) {
 
 	err := singleResult.Err()

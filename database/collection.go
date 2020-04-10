@@ -5,6 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // MongoCollection wraps a connected mongo collection
@@ -18,6 +19,7 @@ type ICollection interface {
 	InsertOneAndFind(ctx context.Context, document interface{}, output interface{}) (interface{}, error)
 	DeleteByID(ctx context.Context, objID *primitive.ObjectID) error
 	UpdateByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) error
+	Find(ctx context.Context, filter interface{}, findOptions *options.FindOptions, obj interface{}) (<-chan interface{}, error)
 	FindByID(ctx context.Context, objID *primitive.ObjectID, obj interface{}) (interface{}, error)
 	FindOne(ctx context.Context, filter interface{}, obj interface{}) (interface{}, error)
 }
