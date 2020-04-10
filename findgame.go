@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// FindActiveGameSetUp lets a user browse active games
 func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUp, error) {
 
 	ok, coll := database.GameSetUp()
@@ -30,7 +31,10 @@ func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUp, erro
 
 	for i := range results {
 		setup := i.(*models.GameSetUp)
-		games = append(games, &GameSetUp{setup})
+		gs := &GameSetUp{setup}
+		if gs.playerCanJoinGame(user) {
+			games = append(games, gs)
+		}
 	}
 
 	return games, err

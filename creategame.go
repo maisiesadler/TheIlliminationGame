@@ -5,19 +5,22 @@ import (
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
+	"github.com/maisiesadler/theilliminationgame/randomcode"
 )
 
 // Create creates a new game
 func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 
 	players := []*models.Player{&models.Player{Nickname: user.Nickname, ID: user.ViewID}}
+	code := randomcode.Generate()
 
 	gameSetUp := &models.GameSetUp{
 		Active:  true,
+		Code:    code,
 		Players: players,
 	}
 
-	gs := LoadGameSetUp(gameSetUp)
+	gs := asGameSetUp(gameSetUp)
 	gs.save()
 
 	return gs
@@ -89,4 +92,9 @@ func (g *GameSetUp) JoinGame(user *apigateway.AuthenticatedUser) bool {
 	})
 
 	return g.save()
+}
+
+// Model returns the db model
+func (g *GameSetUp) Model() *models.GameSetUp {
+	return g.db
 }
