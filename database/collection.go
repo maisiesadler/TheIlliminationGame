@@ -49,3 +49,8 @@ func UserView() (bool, ICollection) {
 func Game() (bool, ICollection) {
 	return CreateCollection("theilliminationgame", "games")
 }
+
+// GameSetUp returns an ICollection for the mongodb collection gamesetup
+func GameSetUp() (bool, ICollection) {
+	return CreateCollection("theilliminationgame", "gamesetup")
+}
