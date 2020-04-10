@@ -1,14 +1,19 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 // GameSetUp is the game while it is being created
 type GameSetUp struct {
-	ID      *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Active  bool                `json:"active"`
-	Code    string              `json:"code"`
-	Options []string            `json:"options"`
-	Players []*Player           `json:"players"`
+	ID          *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Active      bool                `json:"active"`
+	Code        string              `json:"code"`
+	Options     []string            `json:"options"`
+	Players     []*Player           `json:"players"`
+	CreatedDate time.Time           `json:"createdDate"`
 }
 
 // Game is the running game
@@ -18,6 +23,7 @@ type Game struct {
 	CurrentPlayerIndex int                 `json:"playerIdx"`
 	Options            []*Option           `json:"options"`
 	Players            []*Player           `json:"players"`
+	CreatedDate        time.Time           `json:"createdDate"`
 }
 
 // Option is an added option
