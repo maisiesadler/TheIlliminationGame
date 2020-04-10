@@ -2,6 +2,7 @@ package theilliminationgame
 
 import (
 	"errors"
+	"time"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
@@ -15,9 +16,10 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 	code := randomcode.Generate()
 
 	gameSetUp := &models.GameSetUp{
-		Active:  true,
-		Code:    code,
-		Players: players,
+		Active:      true,
+		Code:        code,
+		Players:     players,
+		CreatedDate: time.Now(),
 	}
 
 	gs := asGameSetUp(gameSetUp)
@@ -48,9 +50,10 @@ func (g *GameSetUp) Start() (*Game, error) {
 	g.save()
 
 	game := &models.Game{
-		Options: options,
-		Players: g.db.Players,
-		State:   models.StateRunning,
+		Options:     options,
+		Players:     g.db.Players,
+		State:       models.StateRunning,
+		CreatedDate: time.Now(),
 	}
 
 	gm := &Game{
