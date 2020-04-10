@@ -3,36 +3,31 @@ package theilliminationgame
 import (
 	"testing"
 
-	"github.com/maisiesadler/theilliminationgame/apigateway"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/maisiesadler/theilliminationgame/illiminationtesting"
+	"github.com/maisiesadler/theilliminationgame/models"
 )
 
 func TestCanPlayGame(t *testing.T) {
-	// game := Create([]string{"Maisie", "Jenny"}, []string{"Miss Congeniality", "Little Princess", "Submarine"})
 
-	maisie := &apigateway.AuthenticatedUser{
-		Nickname: "Maisie",
-		ViewID:   primitive.NewObjectID(),
-	}
+	illiminationtesting.SetTestCollectionOverride()
 
-	jenny := &apigateway.AuthenticatedUser{
-		Nickname: "Jenny",
-		ViewID:   primitive.NewObjectID(),
-	}
+	maisie, err := illiminationtesting.TestUser("Maisie")
+	jenny, err := illiminationtesting.TestUser("Jenny")
 
-	game := Create(maisie)
-	game.JoinGame(jenny)
+	setup := Create(maisie)
+	setup.JoinGame(jenny)
 
-	game.AddOption(maisie, "Miss Congeniality")
-	game.AddOption(jenny, "Little Princess")
-	game.AddOption(jenny, "Matilda")
+	setup.AddOption(maisie, "Miss Congeniality")
+	setup.AddOption(jenny, "Little Princess")
+	setup.AddOption(jenny, "Matilda")
 
-	if started := game.Start(); !started {
-		t.Error("Did not start")
+	game, err := setup.Start()
+	if err != nil {
+		t.Errorf("Error starting game: '%v'", err)
 		t.FailNow()
 	}
 
-	if game.CurrentPlayerIndex != 0 {
+	if game.db.CurrentPlayerIndex != 0 {
 		t.Error("Game did not start with first player")
 	}
 
@@ -42,7 +37,7 @@ func TestCanPlayGame(t *testing.T) {
 		t.Errorf("Could not illiminate film, error: '%v'", result)
 	}
 
-	if game.CurrentPlayerIndex != 1 {
+	if game.db.CurrentPlayerIndex != 1 {
 		t.Error("Game did not move forward")
 	}
 
@@ -52,7 +47,7 @@ func TestCanPlayGame(t *testing.T) {
 		t.Errorf("Could not illiminate film, error: '%v'", result)
 	}
 
-	if game.State != StateFinished {
+	if game.db.State != models.StateFinished {
 		t.Error("Game is not finished")
 	}
 }
