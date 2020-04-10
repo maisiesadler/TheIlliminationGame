@@ -5,6 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 // GameSetUp is the game while it is being created
 type GameSetUp struct {
 	ID      *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Active  bool                `json:"active"`
 	Options []string            `json:"options"`
 	Players []*Player           `json:"players"`
 }
