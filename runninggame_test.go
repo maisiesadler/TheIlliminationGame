@@ -11,8 +11,8 @@ func TestCanPlayGame(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
 
-	maisie, err := illiminationtesting.TestUser("Maisie")
-	jenny, err := illiminationtesting.TestUser("Jenny")
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
 
 	setup := Create(maisie)
 	setup.JoinGame(jenny)

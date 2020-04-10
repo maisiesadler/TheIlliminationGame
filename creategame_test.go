@@ -12,15 +12,8 @@ func TestCanJoinGame(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
 
-	maisie := &apigateway.AuthenticatedUser{
-		Nickname: "Maisie",
-		ViewID:   primitive.NewObjectID(),
-	}
-
-	jenny := &apigateway.AuthenticatedUser{
-		Nickname: "Jenny",
-		ViewID:   primitive.NewObjectID(),
-	}
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
 
 	game := Create(maisie)
 
