@@ -13,6 +13,7 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 	players := []*models.Player{&models.Player{Nickname: user.Nickname, ID: user.ViewID}}
 
 	gameSetUp := &models.GameSetUp{
+		Active:  true,
 		Players: players,
 	}
 
@@ -39,6 +40,9 @@ func (g *GameSetUp) Start() (*Game, error) {
 			Name: v,
 		}
 	}
+
+	g.db.Active = false
+	g.save()
 
 	game := &models.Game{
 		Options: options,
