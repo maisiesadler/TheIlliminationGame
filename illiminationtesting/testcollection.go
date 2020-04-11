@@ -14,8 +14,8 @@ import (
 
 // TestCollection wraps a map
 type TestCollection struct {
-	coll             map[primitive.ObjectID]interface{}
-	findOnePredicate func(interface{}, bson.M) bool
+	coll          map[primitive.ObjectID]interface{}
+	findPredicate func(interface{}, bson.M) bool
 }
 
 func CreateTestCollection() *TestCollection {
@@ -64,7 +64,7 @@ func (coll *TestCollection) UpdateByID(ctx context.Context, objID *primitive.Obj
 }
 
 func (coll *TestCollection) Find(ctx context.Context, filter interface{}, findOptions *options.FindOptions, obj interface{}) (<-chan interface{}, error) {
-	if coll.findOnePredicate == nil {
+	if coll.findPredicate == nil {
 		return nil, errors.New("Call SetFindFilter")
 	}
 
@@ -76,7 +76,7 @@ func (coll *TestCollection) Find(ctx context.Context, filter interface{}, findOp
 		elementMap := filter.(bson.D).Map()
 
 		for _, v := range coll.coll {
-			if coll.findOnePredicate(v, elementMap) {
+			if coll.findPredicate(v, elementMap) {
 				results <- v
 			}
 		}
@@ -90,18 +90,18 @@ func (coll *TestCollection) FindByID(ctx context.Context, objID *primitive.Objec
 }
 
 func (coll *TestCollection) SetFindFilter(predicate func(interface{}, bson.M) bool) {
-	coll.findOnePredicate = predicate
+	coll.findPredicate = predicate
 }
 
 func (coll *TestCollection) FindOne(ctx context.Context, filter interface{}, obj interface{}) (interface{}, error) {
-	if coll.findOnePredicate == nil {
+	if coll.findPredicate == nil {
 		return nil, errors.New("Call SetFindFilter")
 	}
 
 	elementMap := filter.(bson.D).Map()
 
 	for _, v := range coll.coll {
-		if coll.findOnePredicate(v, elementMap) {
+		if coll.findPredicate(v, elementMap) {
 			return v, nil
 		}
 	}

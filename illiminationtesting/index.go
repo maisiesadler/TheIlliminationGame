@@ -52,8 +52,25 @@ func SetTestCollectionOverride() {
 	database.SetOverride(overrideDb)
 }
 
-// SetUserViewFindOnePredicate overrides the logic to get the result for FindOne
-func SetUserViewFindOnePredicate(predicate func(*models.UserView, bson.M) bool) bool {
+// SetGameSetUpFindPredicate overrides the logic to get the result for Find
+func SetGameSetUpFindPredicate(predicate func(*models.UserView, bson.M) bool) bool {
+	fn := func(value interface{}, filter bson.M) bool {
+		uv := value.(*models.UserView)
+		return predicate(uv, filter)
+	}
+
+	key := "theilliminationgame_gamesetup"
+
+	if val, ok := overrides[key]; ok {
+		val.findPredicate = fn
+		return true
+	}
+
+	return false
+}
+
+// SetUserViewFindPredicate overrides the logic to get the result for Find
+func SetUserViewFindPredicate(predicate func(*models.UserView, bson.M) bool) bool {
 	fn := func(value interface{}, filter bson.M) bool {
 		uv := value.(*models.UserView)
 		return predicate(uv, filter)
@@ -62,7 +79,7 @@ func SetUserViewFindOnePredicate(predicate func(*models.UserView, bson.M) bool) 
 	key := "theilliminationgame_users"
 
 	if val, ok := overrides[key]; ok {
-		val.findOnePredicate = fn
+		val.findPredicate = fn
 		return true
 	}
 
