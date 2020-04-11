@@ -15,11 +15,11 @@ import (
 )
 
 // FindActiveGameSetUp lets a user browse active games
-func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUp, error) {
+func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummary, error) {
 
 	ok, coll := database.GameSetUp()
 	if !ok {
-		return []*GameSetUp{}, errors.New("Not connected")
+		return []*GameSetUpSummary{}, errors.New("Not connected")
 	}
 
 	findOptions := options.Find()
@@ -27,13 +27,14 @@ func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUp, erro
 
 	results, err := coll.Find(context.TODO(), filter, findOptions, &models.GameSetUp{})
 
-	games := make([]*GameSetUp, 0)
+	games := make([]*GameSetUpSummary, 0)
 
 	for i := range results {
 		setup := i.(*models.GameSetUp)
 		gs := &GameSetUp{setup}
 		if gs.playerCanJoinGame(user) {
-			games = append(games, gs)
+			summary := gs.Summary(user)
+			games = append(games, summary)
 		}
 	}
 
