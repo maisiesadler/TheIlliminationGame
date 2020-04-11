@@ -52,6 +52,7 @@ func (g *GameSetUp) Start() (*Game, error) {
 	game := &models.Game{
 		Options:     options,
 		Players:     g.db.Players,
+		SetUpCode:   g.db.Code,
 		State:       models.StateRunning,
 		CreatedDate: time.Now(),
 	}
@@ -95,9 +96,4 @@ func (g *GameSetUp) JoinGame(user *apigateway.AuthenticatedUser) bool {
 	})
 
 	return g.save()
-}
-
-// Model returns the db model
-func (g *GameSetUp) Model() *models.GameSetUp {
-	return g.db
 }

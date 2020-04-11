@@ -71,23 +71,28 @@ func (g *Game) moveForward() {
 
 func (g *Game) evaluate() {
 	if g.db.State == models.StateRunning {
-		if gameHasFinished := g.checkForWinner(); gameHasFinished {
+		if gameHasFinished, _ := g.checkForWinner(); gameHasFinished {
 			g.db.State = models.StateFinished
 		}
 	}
 }
 
-func (g *Game) checkForWinner() bool {
-	remaining := 0
+func (g *Game) checkForWinner() (bool, string) {
+	var remaining *string
 	for _, o := range g.db.Options {
 		if !o.Illiminated {
-			remaining++
+			if remaining != nil {
+				return false, ""
+			}
+
+			remaining = &o.Name
 		}
 	}
 
-	if remaining == 1 {
-		return true
+	if remaining != nil {
+		return true, *remaining
 	}
 
-	return false
+	// Something has gone wrong
+	return false, ""
 }
