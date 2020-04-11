@@ -19,6 +19,7 @@ type GameSetUp struct {
 // Game is the running game
 type Game struct {
 	ID                 *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	SetUpCode          string              `json:"setupCode"`
 	State              State               `json:"state"`
 	CurrentPlayerIndex int                 `json:"playerIdx"`
 	Options            []*Option           `json:"options"`
