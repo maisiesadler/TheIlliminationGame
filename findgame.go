@@ -26,6 +26,9 @@ func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummar
 	filter := bson.D{primitive.E{Key: "active", Value: true}}
 
 	results, err := coll.Find(context.TODO(), filter, findOptions, &models.GameSetUp{})
+	if err != nil {
+		return []*GameSetUpSummary{}, err
+	}
 
 	games := make([]*GameSetUpSummary, 0)
 
