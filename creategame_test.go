@@ -3,6 +3,8 @@ package theilliminationgame
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/maisiesadler/theilliminationgame/illiminationtesting"
 )
 
@@ -22,6 +24,28 @@ func TestCanJoinGame(t *testing.T) {
 	if len(game.db.Players) != 2 {
 		t.Errorf("Not correct number of players. Expected=2, Actual=%v.", len(game.db.Players))
 	}
+}
+
+func TestCanViewIfInGame(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
+
+	game := Create(maisie)
+
+	jensSummary := game.Summary(jenny)
+
+	assert.False(t, jensSummary.UserInGame)
+
+	if joined := game.JoinGame(jenny); !joined {
+		t.Error("Could not join game")
+	}
+
+	jensSummary = game.Summary(jenny)
+
+	assert.True(t, jensSummary.UserInGame)
 }
 
 func TestJoinGameDoesNotDuplicatePlayers(t *testing.T) {

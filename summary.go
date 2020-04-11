@@ -51,14 +51,19 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 		options[i] = v
 	}
 
+	userInGame := false
 	for i, v := range g.db.Players {
 		players[i] = v.Nickname
+		if v.ID == user.ViewID {
+			userInGame = true
+		}
 	}
 
 	return &GameSetUpSummary{
-		ID:      g.db.ID,
-		Code:    g.db.Code,
-		Options: options,
-		Players: players,
+		ID:         g.db.ID,
+		Code:       g.db.Code,
+		Options:    options,
+		Players:    players,
+		UserInGame: userInGame,
 	}
 }
