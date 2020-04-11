@@ -19,6 +19,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	}
 
 	var status string
+	var winner string
 	if g.db.State == models.StateRunning {
 		if currentPlayer := g.playersTurn(); currentPlayer != nil {
 			if currentPlayer.ID == user.ViewID {
@@ -28,8 +29,8 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 			}
 		}
 	} else {
-		_, winner := g.checkForWinner()
-		status = "Finished, winner: '" + winner + "'"
+		_, winner = g.checkForWinner()
+		status = "Finished"
 	}
 
 	return &GameSummary{
@@ -37,6 +38,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		Options: options,
 		Players: players,
 		Status:  status,
+		Winner:  winner,
 	}
 }
 

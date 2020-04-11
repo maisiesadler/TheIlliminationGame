@@ -48,6 +48,16 @@ func TestCanPlayGame(t *testing.T) {
 	}
 
 	if game.db.State != models.StateFinished {
-		t.Error("Game is not finished")
+		t.Errorf("Game is not finished, actual: %v", game.db.State)
+	}
+
+	summary := game.Summary(maisie)
+
+	if summary.Status != "Finished" {
+		t.Errorf("Game Summary is not Finished, actual: %v", summary.Status)
+	}
+
+	if summary.Winner != "Matilda" {
+		t.Errorf("Game Summary does not have expected winner, actual: %v", summary.Winner)
 	}
 }

@@ -17,7 +17,7 @@ type Game struct {
 
 // GameSetUpSummary is a view of the game
 type GameSetUpSummary struct {
-	ID      *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	ID      *primitive.ObjectID `json:"id"`
 	Code    string              `json:"code"`
 	Options []string            `json:"options"`
 	Players []string            `json:"players"`
@@ -25,8 +25,9 @@ type GameSetUpSummary struct {
 
 // GameSummary is a view of the game
 type GameSummary struct {
-	ID      *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	ID      *primitive.ObjectID `json:"id"`
 	Options []string            `json:"options"`
 	Players []string            `json:"players"`
 	Status  string              `json:"status"`
+	Winner  string              `json:"winner"`
 }
