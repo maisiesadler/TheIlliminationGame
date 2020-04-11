@@ -53,9 +53,9 @@ func SetTestCollectionOverride() {
 }
 
 // SetGameSetUpFindPredicate overrides the logic to get the result for Find
-func SetGameSetUpFindPredicate(predicate func(*models.UserView, bson.M) bool) bool {
+func SetGameSetUpFindPredicate(predicate func(*models.GameSetUp, bson.M) bool) bool {
 	fn := func(value interface{}, filter bson.M) bool {
-		uv := value.(*models.UserView)
+		uv := value.(*models.GameSetUp)
 		return predicate(uv, filter)
 	}
 
