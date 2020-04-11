@@ -2,6 +2,7 @@ package theilliminationgame
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
@@ -72,8 +73,9 @@ func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string)
 		return false
 	}
 
+	lowerOption := strings.ToLower(option)
 	for _, o := range g.db.Options {
-		if o == option {
+		if strings.ToLower(o) == lowerOption {
 			return false
 		}
 	}
