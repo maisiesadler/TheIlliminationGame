@@ -5,8 +5,8 @@ import (
 	"github.com/maisiesadler/theilliminationgame/models"
 )
 
-// GameSummary returns a summary of the game
-func (g *Game) GameSummary(user *apigateway.AuthenticatedUser) *GameSummary {
+// Summary returns a summary of the game
+func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	options := make([]string, len(g.db.Options))
 	players := make([]string, len(g.db.Players))
 
@@ -37,5 +37,26 @@ func (g *Game) GameSummary(user *apigateway.AuthenticatedUser) *GameSummary {
 		Options: options,
 		Players: players,
 		Status:  status,
+	}
+}
+
+// Summary returns a summary of the game setup
+func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummary {
+	options := make([]string, len(g.db.Options))
+	players := make([]string, len(g.db.Players))
+
+	for i, v := range g.db.Options {
+		options[i] = v
+	}
+
+	for i, v := range g.db.Players {
+		players[i] = v.Nickname
+	}
+
+	return &GameSetUpSummary{
+		ID:      g.db.ID,
+		Code:    g.db.Code,
+		Options: options,
+		Players: players,
 	}
 }
