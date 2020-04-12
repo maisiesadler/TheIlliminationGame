@@ -30,10 +30,14 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 }
 
 // Start validates the inputs and sets the status to Running
-func (g *GameSetUp) Start() (*Game, error) {
+func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, error) {
 
 	if len(g.db.Players) == 0 {
 		return nil, errors.New("Not enough players")
+	}
+
+	if !g.userIsInGame(user) {
+		return nil, errors.New("User is not in game")
 	}
 
 	optionLen := len(g.db.Options)

@@ -21,7 +21,7 @@ func TestCanPlayGame(t *testing.T) {
 	setup.AddOption(jenny, "Little Princess")
 	setup.AddOption(jenny, "Matilda")
 
-	game, err := setup.Start()
+	game, err := setup.Start(maisie)
 	if err != nil {
 		t.Errorf("Error starting game: '%v'", err)
 		t.FailNow()
