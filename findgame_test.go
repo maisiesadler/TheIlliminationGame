@@ -66,7 +66,7 @@ func TestCanFindActiveGameSetUp(t *testing.T) {
 
 	coll.DeleteByID(context.TODO(), g.Summary(maisie).ID)
 
-	ok, coll = database.GameSetUp()
+	ok, coll = database.Game()
 	assert.True(t, ok)
 
 	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
@@ -122,4 +122,59 @@ func TestAnotherUserCanFindAvailableGameSetUp(t *testing.T) {
 	assert.True(t, ok)
 
 	coll.DeleteByID(context.TODO(), g.Summary(maisie).ID)
+}
+
+func TestFindActiveGame(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+	illiminationtesting.SetGameFindPredicate(func(g *models.Game, m primitive.M) bool {
+		andval := m["$and"].(*[]bson.M)
+		stateval := (*andval)[0]["state"]
+
+		if stateval != string(g.State) {
+			return false
+		}
+
+		idval := (*andval)[1]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
+		id := idval.(primitive.ObjectID)
+
+		for _, p := range g.Players {
+			if p.ID == id {
+				return true
+			}
+		}
+
+		return false
+	})
+
+	maisie := illiminationtesting.TestUser(t, "maisie")
+
+	active, err := FindActiveGame(maisie)
+	assert.Nil(t, err)
+	beforeLen := len(active)
+
+	g := Create(maisie)
+
+	g.AddOption(maisie, "One")
+	g.AddOption(maisie, "Two")
+
+	game, err := g.Start(maisie)
+
+	active, err = FindActiveGame(maisie)
+	assert.Nil(t, err)
+
+	assert.Equal(t, beforeLen+1, len(active))
+
+	assert.Nil(t, err)
+
+	// Cleanup
+	ok, coll := database.GameSetUp()
+	assert.True(t, ok)
+
+	coll.DeleteByID(context.TODO(), g.Summary(maisie).ID)
+
+	ok, coll = database.Game()
+	assert.True(t, ok)
+
+	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
 }
