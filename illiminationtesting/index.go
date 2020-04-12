@@ -52,6 +52,18 @@ func SetTestCollectionOverride() {
 	database.SetOverride(overrideDb)
 }
 
+// SetGameFindPredicate overrides the logic to get the result for Find
+func SetGameFindPredicate(predicate func(*models.Game, bson.M) bool) bool {
+	fn := func(value interface{}, filter bson.M) bool {
+		uv := value.(*models.Game)
+		return predicate(uv, filter)
+	}
+
+	coll := getOrAddTestCollection("theilliminationgame", "games")
+	coll.findPredicate = fn
+	return true
+}
+
 // SetGameSetUpFindPredicate overrides the logic to get the result for Find
 func SetGameSetUpFindPredicate(predicate func(*models.GameSetUp, bson.M) bool) bool {
 	fn := func(value interface{}, filter bson.M) bool {
