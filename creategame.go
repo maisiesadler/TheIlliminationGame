@@ -69,6 +69,7 @@ func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string)
 		return false
 	}
 
+	option = strings.TrimSpace(option)
 	lowerOption := strings.ToLower(option)
 	for _, o := range g.db.Options {
 		if strings.ToLower(o) == lowerOption {

@@ -127,6 +127,10 @@ func TestCannotAddDuplicates(t *testing.T) {
 		t.Error("Could add duplicate option")
 	}
 
+	if added := game.AddOption(maisie, " Miss Congeniality   "); added {
+		t.Error("Could add duplicate option with whitespace")
+	}
+
 	if added := game.AddOption(maisie, "Miss congeniality"); added {
 		t.Error("Could add duplicate option with different case")
 	}
