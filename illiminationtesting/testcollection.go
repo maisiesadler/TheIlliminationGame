@@ -98,7 +98,12 @@ func (coll *TestCollection) FindOne(ctx context.Context, filter interface{}, obj
 		return nil, errors.New("Call SetFindFilter")
 	}
 
-	elementMap := filter.(bson.D).Map()
+	var elementMap bson.M
+	if d, ok := filter.(bson.D); ok {
+		elementMap = d.Map()
+	} else {
+		elementMap = filter.(bson.M)
+	}
 
 	for _, v := range coll.coll {
 		if coll.findPredicate(v, elementMap) {
