@@ -11,11 +11,33 @@ import (
 	"github.com/maisiesadler/theilliminationgame/models"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// FindActiveGameSetUp lets a user browse active games
+// FindActiveGameSetUp lets a user browse active games they are in
 func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummary, error) {
+	// { players: { $elemMatch: { "nickname": "Jenny"} } }
+
+	filter := bson.M{"active": true}
+	idMatch := bson.M{"players": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}
+
+	andBson := []bson.M{filter, idMatch}
+
+	return findGamesMatchingFilter(user, &andBson)
+}
+
+// FindAvailableGameSetUp lets a user browse active games they are not in
+func FindAvailableGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummary, error) {
+	// { players: {"$not": { $elemMatch: { "nickname": "Jenny"} } } }
+
+	filter := bson.M{"active": true}
+	idMatch := bson.M{"players": bson.M{"$not": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}}
+
+	andBson := []bson.M{filter, idMatch}
+
+	return findGamesMatchingFilter(user, &andBson)
+}
+
+func findGamesMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSetUpSummary, error) {
 
 	ok, coll := database.GameSetUp()
 	if !ok {
@@ -23,9 +45,8 @@ func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummar
 	}
 
 	findOptions := options.Find()
-	filter := bson.D{primitive.E{Key: "active", Value: true}}
 
-	results, err := coll.Find(context.TODO(), filter, findOptions, &models.GameSetUp{})
+	results, err := coll.Find(context.TODO(), bson.M{"$and": filter}, findOptions, &models.GameSetUp{})
 	if err != nil {
 		return []*GameSetUpSummary{}, err
 	}

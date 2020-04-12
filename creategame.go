@@ -99,3 +99,14 @@ func (g *GameSetUp) JoinGame(user *apigateway.AuthenticatedUser) bool {
 
 	return g.save()
 }
+
+// Deactivate will set the active flag to false
+func (g *GameSetUp) Deactivate(user *apigateway.AuthenticatedUser) bool {
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	g.db.Active = false
+
+	return g.save()
+}
