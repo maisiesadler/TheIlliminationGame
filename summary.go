@@ -7,11 +7,16 @@ import (
 
 // Summary returns a summary of the game
 func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
-	options := make([]string, len(g.db.Options))
+	remaining := []string{}
+	illiminated := []string{}
 	players := make([]string, len(g.db.Players))
 
-	for i, v := range g.db.Options {
-		options[i] = v.Name
+	for _, v := range g.db.Options {
+		if v.Illiminated {
+			illiminated = append(illiminated, v.Name)
+		} else {
+			remaining = append(remaining, v.Name)
+		}
 	}
 
 	for i, v := range g.db.Players {
@@ -34,11 +39,12 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	}
 
 	return &GameSummary{
-		ID:      g.db.ID,
-		Options: options,
-		Players: players,
-		Status:  status,
-		Winner:  winner,
+		ID:          g.db.ID,
+		Remaining:   remaining,
+		Illiminated: illiminated,
+		Players:     players,
+		Status:      status,
+		Winner:      winner,
 	}
 }
 

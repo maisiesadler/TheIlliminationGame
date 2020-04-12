@@ -3,6 +3,8 @@ package theilliminationgame
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/maisiesadler/theilliminationgame/illiminationtesting"
 	"github.com/maisiesadler/theilliminationgame/models"
 )
@@ -60,4 +62,33 @@ func TestCanPlayGame(t *testing.T) {
 	if summary.Winner != "Matilda" {
 		t.Errorf("Game Summary does not have expected winner, actual: %v", summary.Winner)
 	}
+}
+
+func TestIlliminatedGamesAreMovedToCorrectArray(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
+
+	setup := Create(maisie)
+	setup.JoinGame(jenny)
+
+	setup.AddOption(maisie, "Miss Congeniality")
+	setup.AddOption(jenny, "Little Princess")
+	setup.AddOption(jenny, "Matilda")
+
+	game, err := setup.Start(maisie)
+	assert.Nil(t, err)
+
+	assert.Equal(t, 0, game.db.CurrentPlayerIndex)
+
+	result := game.Illiminate(maisie, "Little Princess")
+	assert.Equal(t, Illiminated, result)
+
+	summary := game.Summary(maisie)
+	assert.Equal(t, 1, len(summary.Illiminated))
+	assert.Equal(t, 2, len(summary.Remaining))
+
+	assert.Equal(t, "Little Princess", summary.Illiminated[0])
 }
