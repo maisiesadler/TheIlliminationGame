@@ -73,11 +73,12 @@ func (coll *TestCollection) Find(ctx context.Context, filter interface{}, findOp
 	go func() {
 		defer close(results)
 
-		elementMap := filter.(bson.D).Map()
-
-		for _, v := range coll.coll {
-			if coll.findPredicate(v, elementMap) {
-				results <- v
+		elementMap, err := getElementMap(filter)
+		if err == nil {
+			for _, v := range coll.coll {
+				if coll.findPredicate(v, *elementMap) {
+					results <- v
+				}
 			}
 		}
 	}()
@@ -98,18 +99,28 @@ func (coll *TestCollection) FindOne(ctx context.Context, filter interface{}, obj
 		return nil, errors.New("Call SetFindFilter")
 	}
 
-	var elementMap bson.M
-	if d, ok := filter.(bson.D); ok {
-		elementMap = d.Map()
-	} else {
-		elementMap = filter.(bson.M)
+	elementMap, err := getElementMap(filter)
+	if err != nil {
+		return nil, err
 	}
 
 	for _, v := range coll.coll {
-		if coll.findPredicate(v, elementMap) {
+		if coll.findPredicate(v, *elementMap) {
 			return v, nil
 		}
 	}
 
 	return nil, errors.New("No matching element")
+}
+
+func getElementMap(filter interface{}) (*bson.M, error) {
+	if d, ok := filter.(bson.D); ok {
+		m := d.Map()
+		return &m, nil
+	}
+	if m, ok := filter.(bson.M); ok {
+		return &m, nil
+	}
+
+	return nil, errors.New("filter expected to be bson.D or bson.M")
 }
