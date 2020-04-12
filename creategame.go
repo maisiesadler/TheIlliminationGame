@@ -32,19 +32,11 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 // Start validates the inputs and sets the status to Running
 func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, error) {
 
-	if len(g.db.Players) == 0 {
-		return nil, errors.New("Not enough players")
+	if !g.canBeStarted(user) {
+		return nil, errors.New("Cannot be started")
 	}
 
-	if !g.userIsInGame(user) {
-		return nil, errors.New("User is not in game")
-	}
-
-	optionLen := len(g.db.Options)
-	if optionLen == 0 {
-		return nil, errors.New("Not enough options")
-	}
-	options := make([]*models.Option, optionLen)
+	options := make([]*models.Option, len(g.db.Options))
 	for i, v := range g.db.Options {
 		options[i] = &models.Option{
 			Name: v,
@@ -113,4 +105,20 @@ func (g *GameSetUp) Deactivate(user *apigateway.AuthenticatedUser) bool {
 	g.db.Active = false
 
 	return g.save()
+}
+
+func (g *GameSetUp) canBeStarted(user *apigateway.AuthenticatedUser) bool {
+	if len(g.db.Players) == 0 {
+		return false
+	}
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	if len(g.db.Options) == 0 {
+		return false
+	}
+
+	return true
 }

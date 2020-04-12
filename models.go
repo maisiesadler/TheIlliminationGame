@@ -17,11 +17,12 @@ type Game struct {
 
 // GameSetUpSummary is a view of the game
 type GameSetUpSummary struct {
-	ID         *primitive.ObjectID `json:"id"`
-	Code       string              `json:"code"`
-	Options    []string            `json:"options"`
-	Players    []string            `json:"players"`
-	UserInGame bool                `json:"userInGame"`
+	ID           *primitive.ObjectID `json:"id"`
+	Code         string              `json:"code"`
+	Options      []string            `json:"options"`
+	Players      []string            `json:"players"`
+	UserInGame   bool                `json:"userInGame"`
+	CanBeStarted bool                `json:"canBeStarted"`
 }
 
 // GameSummary is a view of the game
