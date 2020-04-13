@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/maisiesadler/theilliminationgame/illiminationtesting"
 	"github.com/maisiesadler/theilliminationgame/models"
@@ -91,4 +92,54 @@ func TestIlliminatedGamesAreMovedToCorrectArray(t *testing.T) {
 	assert.Equal(t, 2, len(summary.Remaining))
 
 	assert.Equal(t, "Little Princess", summary.Illiminated[0])
+}
+
+func TestStatusIsUpdated(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+	illiminationtesting.SetUserViewFindPredicate(func(uv *models.UserView, m bson.M) bool {
+		return m["username"] == uv.Username
+	})
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
+
+	setup := Create(maisie)
+
+	setup.JoinGame(jenny)
+
+	setup.AddOption(maisie, "Miss Congeniality")
+	setup.AddOption(jenny, "Little Princess")
+	setup.AddOption(jenny, "Matilda")
+
+	game, err := setup.Start(maisie)
+	assert.Nil(t, err)
+
+	maisiesSummary := game.Summary(maisie)
+	assert.Equal(t, "It's your turn", maisiesSummary.Status)
+
+	jennysSummary := game.Summary(jenny)
+	assert.Equal(t, "It's Maisie's turn", jennysSummary.Status)
+
+	assert.Equal(t, 0, game.db.CurrentPlayerIndex)
+
+	result := game.Illiminate(maisie, "Little Princess")
+	assert.Equal(t, Illiminated, result)
+
+	maisiesSummary = game.Summary(maisie)
+	assert.Equal(t, "It's Jenny's turn", maisiesSummary.Status)
+
+	jennysSummary = game.Summary(jenny)
+	assert.Equal(t, "It's your turn", jennysSummary.Status)
+
+	result = game.Illiminate(jenny, "Miss Congeniality")
+	assert.Equal(t, Illiminated, result)
+
+	maisiesSummary = game.Summary(maisie)
+	assert.Equal(t, "Finished", maisiesSummary.Status)
+	assert.Equal(t, "Matilda", maisiesSummary.Winner)
+
+	jennysSummary = game.Summary(jenny)
+	assert.Equal(t, "Finished", jennysSummary.Status)
+	assert.Equal(t, "Matilda", jennysSummary.Winner)
 }

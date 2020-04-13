@@ -28,7 +28,7 @@ func playerIsInGame(user *apigateway.AuthenticatedUser, players []*models.Player
 }
 
 func (g *Game) playersTurn() *models.Player {
-	if g.db.State == models.StateRunning {
+	if g.db.State != models.StateRunning {
 		return nil
 	}
 
