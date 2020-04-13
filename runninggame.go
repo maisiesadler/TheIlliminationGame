@@ -19,6 +19,8 @@ const (
 
 // Illiminate will illiminate one option and move the game on
 func (g *Game) Illiminate(user *apigateway.AuthenticatedUser, option string) IlliminationResult {
+	g.evaluate()
+
 	if result := g.illiminate(user, option); result != Illiminated {
 		return result
 	}

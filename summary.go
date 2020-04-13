@@ -35,7 +35,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		}
 	} else {
 		_, winner = g.checkForWinner()
-		status = "Finished"
+		status = string(g.db.State)
 	}
 
 	return &GameSummary{
