@@ -184,30 +184,7 @@ func TestFindActiveGame(t *testing.T) {
 func TestFindActiveGameUsingSetUpCode(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
-	illiminationtesting.SetGameFindPredicate(func(g *models.Game, m primitive.M) bool {
-		andval := m["$and"].(*[]bson.M)
-		stateval := (*andval)[0]["state"]
-
-		if stateval != string(g.State) {
-			return false
-		}
-
-		setupcodeval := (*andval)[1]["setupcode"]
-		if g.SetUpCode != setupcodeval {
-			return false
-		}
-
-		idval := (*andval)[2]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
-		id := idval.(primitive.ObjectID)
-
-		for _, p := range g.Players {
-			if p.ID == id {
-				return true
-			}
-		}
-
-		return false
-	})
+	illiminationtesting.SetGameFindPredicate(testActiveGameForSetUpPredicate)
 
 	maisie := illiminationtesting.TestUser(t, "maisie")
 
@@ -240,4 +217,29 @@ func TestFindActiveGameUsingSetUpCode(t *testing.T) {
 	assert.True(t, ok)
 
 	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
+}
+
+func testActiveGameForSetUpPredicate(g *models.Game, m primitive.M) bool {
+	andval := m["$and"].(*[]bson.M)
+	stateval := (*andval)[0]["state"]
+
+	if stateval != string(g.State) {
+		return false
+	}
+
+	setupcodeval := (*andval)[1]["setupcode"]
+	if g.SetUpCode != setupcodeval {
+		return false
+	}
+
+	idval := (*andval)[2]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
+	id := idval.(primitive.ObjectID)
+
+	for _, p := range g.Players {
+		if p.ID == id {
+			return true
+		}
+	}
+
+	return false
 }

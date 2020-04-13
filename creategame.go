@@ -40,6 +40,16 @@ const (
 	UserNotInGame    StartResult = "User not in game"
 )
 
+// AddOptionResult is the result of the illiminate operation
+type AddOptionResult string
+
+const (
+	AORSuccess       AddOptionResult = "Success"
+	AORUserNotInGame AddOptionResult = "User not in game"
+	AORAlreadyAdded  AddOptionResult = "Option already added"
+	AORDidNotSave    AddOptionResult = "Did not save"
+)
+
 // Start validates the inputs and sets the status to Running
 func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResult) {
 
@@ -74,23 +84,27 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 }
 
 // AddOption lets a player add an option if the game has not started
-func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string) bool {
+func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string) AddOptionResult {
 
 	if !g.userIsInGame(user) {
-		return false
+		return AORUserNotInGame
 	}
 
 	option = strings.TrimSpace(option)
 	lowerOption := strings.ToLower(option)
 	for _, o := range g.db.Options {
 		if strings.ToLower(o) == lowerOption {
-			return false
+			return AORAlreadyAdded
 		}
 	}
 
 	g.db.Options = append(g.db.Options, option)
 
-	return g.save()
+	if ok := g.save(); ok {
+		return AORSuccess
+	}
+
+	return AORDidNotSave
 }
 
 // JoinGame returns true if the user has joined the game
