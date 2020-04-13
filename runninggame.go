@@ -32,6 +32,21 @@ func (g *Game) Illiminate(user *apigateway.AuthenticatedUser, option string) Ill
 	return Illiminated
 }
 
+// Cancel cancels a running game
+func (g *Game) Cancel(user *apigateway.AuthenticatedUser) bool {
+	if g.db.State != models.StateRunning {
+		return false
+	}
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	g.db.State = models.StateCancelled
+
+	return g.save()
+}
+
 func (g *Game) illiminate(user *apigateway.AuthenticatedUser, option string) IlliminationResult {
 	if g.db.State != models.StateRunning {
 		return NotRunning

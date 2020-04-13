@@ -32,5 +32,6 @@ type GameSummary struct {
 	Remaining   []string            `json:"remaining"`
 	Players     []string            `json:"players"`
 	Status      string              `json:"status"`
+	SetUpCode   string              `json:"setUpCode"`
 	Winner      string              `json:"winner"`
 }

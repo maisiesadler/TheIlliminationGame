@@ -43,6 +43,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		Remaining:   remaining,
 		Illiminated: illiminated,
 		Players:     players,
+		SetUpCode:   g.db.SetUpCode,
 		Status:      status,
 		Winner:      winner,
 	}
