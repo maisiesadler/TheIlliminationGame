@@ -37,8 +37,9 @@ type Option struct {
 type State string
 
 const (
-	StateRunning  State = "Running"
-	StateFinished State = "Finished"
+	StateRunning   State = "Running"
+	StateFinished  State = "Finished"
+	StateCancelled State = "Cancelled"
 )
 
 // Player represents a player
