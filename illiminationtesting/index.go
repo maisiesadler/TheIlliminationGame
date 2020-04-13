@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/database"
@@ -25,6 +27,10 @@ func TestUser(t *testing.T, name string) *apigateway.AuthenticatedUser {
 	if err != nil {
 		t.Errorf("Error setting nickname: '%v'", err)
 	}
+
+	// Reload user
+	user, err = apigateway.GetOrCreateAuthenticatedUser(context.TODO(), request)
+	assert.Nil(t, err)
 
 	return user
 }
