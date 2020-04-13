@@ -23,6 +23,7 @@ type GameSetUpSummary struct {
 	Players      []string            `json:"players"`
 	UserInGame   bool                `json:"userInGame"`
 	CanBeStarted bool                `json:"canBeStarted"`
+	Games        []*GameSummary      `json:"games"`
 }
 
 // GameSummary is a view of the game
@@ -33,5 +34,6 @@ type GameSummary struct {
 	Players     []string            `json:"players"`
 	Status      string              `json:"status"`
 	SetUpCode   string              `json:"setUpCode"`
+	UserInGame  bool                `json:"userInGame"`
 	Winner      string              `json:"winner"`
 }

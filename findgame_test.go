@@ -180,3 +180,64 @@ func TestFindActiveGame(t *testing.T) {
 
 	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
 }
+
+func TestFindActiveGameUsingSetUpCode(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+	illiminationtesting.SetGameFindPredicate(func(g *models.Game, m primitive.M) bool {
+		andval := m["$and"].(*[]bson.M)
+		stateval := (*andval)[0]["state"]
+
+		if stateval != string(g.State) {
+			return false
+		}
+
+		setupcodeval := (*andval)[1]["setupcode"]
+		if g.SetUpCode != setupcodeval {
+			return false
+		}
+
+		idval := (*andval)[2]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
+		id := idval.(primitive.ObjectID)
+
+		for _, p := range g.Players {
+			if p.ID == id {
+				return true
+			}
+		}
+
+		return false
+	})
+
+	maisie := illiminationtesting.TestUser(t, "maisie")
+
+	active, err := FindActiveGame(maisie)
+	assert.Nil(t, err)
+	beforeLen := len(active)
+
+	g := Create(maisie)
+
+	g.AddOption(maisie, "One")
+	g.AddOption(maisie, "Two")
+
+	game, startResult := g.Start(maisie)
+	assert.Equal(t, Success, startResult)
+
+	active, err = FindActiveGameForSetUp(maisie, game.db.SetUpCode)
+	assert.Nil(t, err)
+
+	assert.Equal(t, beforeLen+1, len(active))
+
+	assert.Nil(t, err)
+
+	// Cleanup
+	ok, coll := database.GameSetUp()
+	assert.True(t, ok)
+
+	coll.DeleteByID(context.TODO(), g.Summary(maisie).ID)
+
+	ok, coll = database.Game()
+	assert.True(t, ok)
+
+	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
+}

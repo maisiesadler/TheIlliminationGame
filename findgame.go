@@ -49,6 +49,19 @@ func FindActiveGame(user *apigateway.AuthenticatedUser) ([]*GameSummary, error) 
 	return findGamesMatchingFilter(user, &andBson)
 }
 
+// FindActiveGameForSetUp lets a user browse active games they are in
+func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupCode string) ([]*GameSummary, error) {
+	// { players: { $elemMatch: { "nickname": "Jenny"} } }
+
+	filter := bson.M{"state": "Running"}
+	forSetUpCode := bson.M{"setupcode": setupCode}
+	idMatch := bson.M{"players": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}
+
+	andBson := []bson.M{filter, forSetUpCode, idMatch}
+
+	return findGamesMatchingFilter(user, &andBson)
+}
+
 func findGameSetupMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSetUpSummary, error) {
 
 	ok, coll := database.GameSetUp()

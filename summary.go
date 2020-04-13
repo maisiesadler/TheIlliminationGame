@@ -19,8 +19,12 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		}
 	}
 
+	userInGame := false
 	for i, v := range g.db.Players {
 		players[i] = v.Nickname
+		if v.ID == user.ViewID {
+			userInGame = true
+		}
 	}
 
 	var status string
@@ -45,6 +49,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		Players:     players,
 		SetUpCode:   g.db.SetUpCode,
 		Status:      status,
+		UserInGame:  userInGame,
 		Winner:      winner,
 	}
 }
@@ -68,9 +73,15 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 
 	canBeStarted := g.canBeStarted(user) == CanBeStarted
 
+	var games []*GameSummary
+	if !g.db.Active {
+		games, _ = FindActiveGameForSetUp(user, g.db.Code)
+	}
+
 	return &GameSetUpSummary{
 		ID:           g.db.ID,
 		Code:         g.db.Code,
+		Games:        games,
 		Options:      options,
 		Players:      players,
 		UserInGame:   userInGame,
