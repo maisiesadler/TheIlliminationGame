@@ -1,7 +1,6 @@
 package theilliminationgame
 
 import (
-	"errors"
 	"strings"
 	"time"
 
@@ -29,11 +28,23 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 	return gs
 }
 
-// Start validates the inputs and sets the status to Running
-func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, error) {
+// StartResult is the result of the illiminate operation
+type StartResult string
 
-	if !g.canBeStarted(user) {
-		return nil, errors.New("Cannot be started")
+const (
+	CanBeStarted     StartResult = "Can be started"
+	Success          StartResult = "Success"
+	NotActive        StartResult = "Not active"
+	NotEnoughPlayers StartResult = "Not enough players"
+	NotEnoughOptions StartResult = "Not enough options"
+	UserNotInGame    StartResult = "User not in game"
+)
+
+// Start validates the inputs and sets the status to Running
+func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResult) {
+
+	if startResult := g.canBeStarted(user); startResult != CanBeStarted {
+		return nil, startResult
 	}
 
 	options := make([]*models.Option, len(g.db.Options))
@@ -59,7 +70,7 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, error) {
 	}
 	gm.save()
 
-	return gm, nil
+	return gm, Success
 }
 
 // AddOption lets a player add an option if the game has not started
@@ -108,18 +119,22 @@ func (g *GameSetUp) Deactivate(user *apigateway.AuthenticatedUser) bool {
 	return g.save()
 }
 
-func (g *GameSetUp) canBeStarted(user *apigateway.AuthenticatedUser) bool {
+func (g *GameSetUp) canBeStarted(user *apigateway.AuthenticatedUser) StartResult {
+	if !g.db.Active {
+		return NotActive
+	}
+
 	if len(g.db.Players) == 0 {
-		return false
+		return NotEnoughPlayers
 	}
 
 	if !g.userIsInGame(user) {
-		return false
+		return UserNotInGame
 	}
 
 	if len(g.db.Options) == 0 {
-		return false
+		return NotEnoughOptions
 	}
 
-	return true
+	return CanBeStarted
 }

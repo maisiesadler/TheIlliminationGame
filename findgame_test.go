@@ -52,8 +52,9 @@ func TestCanFindActiveGameSetUp(t *testing.T) {
 	g.AddOption(maisie, "One")
 	g.AddOption(maisie, "Two")
 
-	game, err := g.Start(maisie)
-	assert.Nil(t, err)
+	game, startResult := g.Start(maisie)
+	assert.Equal(t, Success, startResult)
+	assert.NotNil(t, game)
 
 	active, err = FindActiveGameSetUp(maisie)
 	assert.Nil(t, err)
@@ -158,7 +159,8 @@ func TestFindActiveGame(t *testing.T) {
 	g.AddOption(maisie, "One")
 	g.AddOption(maisie, "Two")
 
-	game, err := g.Start(maisie)
+	game, startResult := g.Start(maisie)
+	assert.Equal(t, Success, startResult)
 
 	active, err = FindActiveGame(maisie)
 	assert.Nil(t, err)

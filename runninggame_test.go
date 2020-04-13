@@ -24,9 +24,9 @@ func TestCanPlayGame(t *testing.T) {
 	setup.AddOption(jenny, "Little Princess")
 	setup.AddOption(jenny, "Matilda")
 
-	game, err := setup.Start(maisie)
-	if err != nil {
-		t.Errorf("Error starting game: '%v'", err)
+	game, startResult := setup.Start(maisie)
+	if startResult != Success {
+		t.Errorf("Error starting game: '%v'", startResult)
 		t.FailNow()
 	}
 
@@ -79,8 +79,8 @@ func TestIlliminatedGamesAreMovedToCorrectArray(t *testing.T) {
 	setup.AddOption(jenny, "Little Princess")
 	setup.AddOption(jenny, "Matilda")
 
-	game, err := setup.Start(maisie)
-	assert.Nil(t, err)
+	game, startResult := setup.Start(maisie)
+	assert.Equal(t, Success, startResult)
 
 	assert.Equal(t, 0, game.db.CurrentPlayerIndex)
 
@@ -112,8 +112,8 @@ func TestStatusIsUpdated(t *testing.T) {
 	setup.AddOption(jenny, "Little Princess")
 	setup.AddOption(jenny, "Matilda")
 
-	game, err := setup.Start(maisie)
-	assert.Nil(t, err)
+	game, startResult := setup.Start(maisie)
+	assert.Equal(t, Success, startResult)
 
 	maisiesSummary := game.Summary(maisie)
 	assert.Equal(t, "It's your turn", maisiesSummary.Status)

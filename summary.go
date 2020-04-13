@@ -65,7 +65,7 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 		}
 	}
 
-	canBeStarted := g.canBeStarted(user)
+	canBeStarted := g.canBeStarted(user) == CanBeStarted
 
 	return &GameSetUpSummary{
 		ID:           g.db.ID,
