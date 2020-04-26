@@ -25,7 +25,7 @@ type Game struct {
 	Options            []*Option           `json:"options"`
 	Players            []*Player           `json:"players"`
 	CreatedDate        time.Time           `json:"createdDate"`
-	LastAction         *LastAction         `json:"lastAction"`
+	Actions            []Action            `json:"actions"`
 }
 
 // Option is an added option
@@ -34,8 +34,8 @@ type Option struct {
 	Illiminated bool
 }
 
-// LastAction is the last played action of this game
-type LastAction struct {
+// Action is an action played in this game
+type Action struct {
 	PlayerIdx int    `json:"playerIdx"`
 	OptionIdx int    `json:"optionIdx"`
 	Action    string `json:"action"`
