@@ -25,7 +25,7 @@ type Game struct {
 	Options            []*Option           `json:"options"`
 	Players            []*Player           `json:"players"`
 	CreatedDate        time.Time           `json:"createdDate"`
-	Actions            []Action            `json:"actions"`
+	Actions            []*Action           `json:"actions"`
 }
 
 // Option is an added option
