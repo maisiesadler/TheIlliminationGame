@@ -116,23 +116,23 @@ func TestLastActionIsUpdated(t *testing.T) {
 	assert.Equal(t, Success, startResult)
 
 	maisiesSummary := game.Summary(maisie)
-	assert.Nil(t, maisiesSummary.LastAction)
+	assert.Equal(t, 0, len(maisiesSummary.Actions))
 
 	result := game.Illiminate(maisie, "Little Princess")
 	assert.Equal(t, Illiminated, result)
 
 	maisiesSummary = game.Summary(maisie)
-	assert.NotNil(t, maisiesSummary.LastAction)
-	assert.Equal(t, "Maisie", maisiesSummary.LastAction.Player)
-	assert.Equal(t, "Little Princess", maisiesSummary.LastAction.Option)
-	assert.Equal(t, "Illiminated", maisiesSummary.LastAction.Action)
+	assert.Equal(t, 1, len(maisiesSummary.Actions))
+	assert.Equal(t, "Maisie", maisiesSummary.Actions[0].Player)
+	assert.Equal(t, "Little Princess", maisiesSummary.Actions[0].Option)
+	assert.Equal(t, "Illiminated", maisiesSummary.Actions[0].Action)
 
 	result = game.Illiminate(jenny, "Miss Congeniality")
 	assert.Equal(t, Illiminated, result)
 
 	maisiesSummary = game.Summary(maisie)
-	assert.NotNil(t, maisiesSummary.LastAction)
-	assert.Equal(t, "Jenny", maisiesSummary.LastAction.Player)
-	assert.Equal(t, "Miss Congeniality", maisiesSummary.LastAction.Option)
-	assert.Equal(t, "Illiminated", maisiesSummary.LastAction.Action)
+	assert.Equal(t, 2, len(maisiesSummary.Actions))
+	assert.Equal(t, "Jenny", maisiesSummary.Actions[1].Player)
+	assert.Equal(t, "Miss Congeniality", maisiesSummary.Actions[1].Option)
+	assert.Equal(t, "Illiminated", maisiesSummary.Actions[1].Action)
 }

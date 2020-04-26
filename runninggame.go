@@ -26,11 +26,11 @@ func (g *Game) Illiminate(user *apigateway.AuthenticatedUser, option string) Ill
 		return result
 	}
 
-	g.db.LastAction = &models.LastAction{
+	g.db.Actions = append(g.db.Actions, &models.Action{
 		Action:    "Illiminated",
 		PlayerIdx: g.db.CurrentPlayerIndex,
 		OptionIdx: *idx,
-	}
+	})
 	g.moveForward()
 
 	if saved := g.save(); !saved {

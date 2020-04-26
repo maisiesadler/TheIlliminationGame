@@ -11,11 +11,25 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	illiminated := []string{}
 	players := make([]string, len(g.db.Players))
 
-	for _, v := range g.db.Options {
+	var lastIlliminated *LastIlliminated
+	if illiminatedLen := len(g.db.Actions); illiminatedLen > 0 {
+		lastIlliminated = &LastIlliminated{
+			mainListIndex: g.db.Actions[illiminatedLen-1].OptionIdx,
+		}
+	}
+
+	var illiminatedIdxInRemaining int
+	for idx, v := range g.db.Options {
 		if v.Illiminated {
 			illiminated = append(illiminated, v.Name)
+
+			if lastIlliminated.mainListIndex == idx {
+				lastIlliminated.Option = v.Name
+				lastIlliminated.OldIndex = illiminatedIdxInRemaining
+			}
 		} else {
 			remaining = append(remaining, v.Name)
+			illiminatedIdxInRemaining++
 		}
 	}
 
@@ -42,34 +56,35 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		status = string(g.db.State)
 	}
 
-	var action *LastAction
+	actions := []*Action{}
 
-	if g.db.LastAction != nil {
-		playerIdx := g.db.LastAction.PlayerIdx
-		optionIdx := g.db.LastAction.OptionIdx
+	for _, action := range g.db.Actions {
+		playerIdx := action.PlayerIdx
+		optionIdx := action.OptionIdx
 
 		if playerIdx < len(g.db.Players) && optionIdx < len(g.db.Options) {
 			player := g.db.Players[playerIdx]
 			option := g.db.Options[optionIdx]
 
-			action = &LastAction{
+			actions = append(actions, &Action{
 				Player: player.Nickname,
 				Option: option.Name,
-				Action: g.db.LastAction.Action,
-			}
+				Action: action.Action,
+			})
 		}
 	}
 
 	return &GameSummary{
-		ID:          g.db.ID,
-		Remaining:   remaining,
-		Illiminated: illiminated,
-		Players:     players,
-		SetUpCode:   g.db.SetUpCode,
-		Status:      status,
-		UserInGame:  userInGame,
-		Winner:      winner,
-		LastAction:  action,
+		ID:              g.db.ID,
+		Remaining:       remaining,
+		Illiminated:     illiminated,
+		Players:         players,
+		SetUpCode:       g.db.SetUpCode,
+		Status:          status,
+		UserInGame:      userInGame,
+		Winner:          winner,
+		Actions:         actions,
+		LastIlliminated: lastIlliminated,
 	}
 }
 

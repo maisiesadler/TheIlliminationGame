@@ -28,20 +28,28 @@ type GameSetUpSummary struct {
 
 // GameSummary is a view of the game
 type GameSummary struct {
-	ID          *primitive.ObjectID `json:"id"`
-	Illiminated []string            `json:"illiminated"`
-	Remaining   []string            `json:"remaining"`
-	Players     []string            `json:"players"`
-	Status      string              `json:"status"`
-	SetUpCode   string              `json:"setUpCode"`
-	UserInGame  bool                `json:"userInGame"`
-	Winner      string              `json:"winner"`
-	LastAction  *LastAction         `json:"lastAction"`
+	ID              *primitive.ObjectID `json:"id"`
+	Illiminated     []string            `json:"illiminated"`
+	Remaining       []string            `json:"remaining"`
+	Players         []string            `json:"players"`
+	Status          string              `json:"status"`
+	SetUpCode       string              `json:"setUpCode"`
+	UserInGame      bool                `json:"userInGame"`
+	Winner          string              `json:"winner"`
+	Actions         []*Action           `json:"actions"`
+	LastIlliminated *LastIlliminated    `json:"lastIlliminated"`
 }
 
-// LastAction is the last action played
-type LastAction struct {
+// Action is an action played in the game
+type Action struct {
 	Player string `json:"player"`
 	Option string `json:"option"`
 	Action string `json:"action"`
+}
+
+// LastIlliminated is the last illiminated option
+type LastIlliminated struct {
+	Option        string `json:"option"`
+	OldIndex      int    `json:"oldIndex"`
+	mainListIndex int
 }
