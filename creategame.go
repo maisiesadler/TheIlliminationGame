@@ -146,7 +146,7 @@ func (g *GameSetUp) canBeStarted(user *apigateway.AuthenticatedUser) StartResult
 		return UserNotInGame
 	}
 
-	if len(g.db.Options) == 0 {
+	if len(g.db.Options) < 2 {
 		return NotEnoughOptions
 	}
 

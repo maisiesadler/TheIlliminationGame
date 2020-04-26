@@ -21,10 +21,16 @@ const (
 func (g *Game) Illiminate(user *apigateway.AuthenticatedUser, option string) IlliminationResult {
 	g.evaluate()
 
-	if result := g.illiminate(user, option); result != Illiminated {
+	result, idx := g.illiminate(user, option)
+	if result != Illiminated {
 		return result
 	}
 
+	g.db.LastAction = &models.LastAction{
+		Action:    "Illiminated",
+		PlayerIdx: g.db.CurrentPlayerIndex,
+		OptionIdx: *idx,
+	}
 	g.moveForward()
 
 	if saved := g.save(); !saved {
@@ -49,28 +55,28 @@ func (g *Game) Cancel(user *apigateway.AuthenticatedUser) bool {
 	return g.save()
 }
 
-func (g *Game) illiminate(user *apigateway.AuthenticatedUser, option string) IlliminationResult {
+func (g *Game) illiminate(user *apigateway.AuthenticatedUser, option string) (IlliminationResult, *int) {
 	if g.db.State != models.StateRunning {
-		return NotRunning
+		return NotRunning, nil
 	}
 
 	currentPlayer := g.db.Players[g.db.CurrentPlayerIndex]
 	if currentPlayer.ID != user.ViewID {
-		return NotYourTurn
+		return NotYourTurn, nil
 	}
 
-	for _, o := range g.db.Options {
+	for idx, o := range g.db.Options {
 		if o.Name == option {
 			if o.Illiminated {
-				return AlreadyIlliminated
+				return AlreadyIlliminated, nil
 			}
 
 			o.Illiminated = true
-			return Illiminated
+			return Illiminated, &idx
 		}
 	}
 
-	return OptionNotValid
+	return OptionNotValid, nil
 }
 
 func (g *Game) moveForward() {

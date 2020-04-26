@@ -42,6 +42,24 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		status = string(g.db.State)
 	}
 
+	var action *LastAction
+
+	if g.db.LastAction != nil {
+		playerIdx := g.db.LastAction.PlayerIdx
+		optionIdx := g.db.LastAction.OptionIdx
+
+		if playerIdx < len(g.db.Players) && optionIdx < len(g.db.Options) {
+			player := g.db.Players[playerIdx]
+			option := g.db.Options[optionIdx]
+
+			action = &LastAction{
+				Player: player.Nickname,
+				Option: option.Name,
+				Action: g.db.LastAction.Action,
+			}
+		}
+	}
+
 	return &GameSummary{
 		ID:          g.db.ID,
 		Remaining:   remaining,
@@ -51,6 +69,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		Status:      status,
 		UserInGame:  userInGame,
 		Winner:      winner,
+		LastAction:  action,
 	}
 }
 

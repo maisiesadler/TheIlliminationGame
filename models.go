@@ -36,4 +36,12 @@ type GameSummary struct {
 	SetUpCode   string              `json:"setUpCode"`
 	UserInGame  bool                `json:"userInGame"`
 	Winner      string              `json:"winner"`
+	LastAction  *LastAction         `json:"lastAction"`
+}
+
+// LastAction is the last action played
+type LastAction struct {
+	Player string `json:"player"`
+	Option string `json:"option"`
+	Action string `json:"action"`
 }

@@ -94,7 +94,7 @@ func TestIlliminatedGamesAreMovedToCorrectArray(t *testing.T) {
 	assert.Equal(t, "Little Princess", summary.Illiminated[0])
 }
 
-func TestStatusIsUpdated(t *testing.T) {
+func TestLastActionIsUpdated(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
 	illiminationtesting.SetUserViewFindPredicate(func(uv *models.UserView, m bson.M) bool {
@@ -116,30 +116,23 @@ func TestStatusIsUpdated(t *testing.T) {
 	assert.Equal(t, Success, startResult)
 
 	maisiesSummary := game.Summary(maisie)
-	assert.Equal(t, "It's your turn", maisiesSummary.Status)
-
-	jennysSummary := game.Summary(jenny)
-	assert.Equal(t, "It's Maisie's turn", jennysSummary.Status)
-
-	assert.Equal(t, 0, game.db.CurrentPlayerIndex)
+	assert.Nil(t, maisiesSummary.LastAction)
 
 	result := game.Illiminate(maisie, "Little Princess")
 	assert.Equal(t, Illiminated, result)
 
 	maisiesSummary = game.Summary(maisie)
-	assert.Equal(t, "It's Jenny's turn", maisiesSummary.Status)
-
-	jennysSummary = game.Summary(jenny)
-	assert.Equal(t, "It's your turn", jennysSummary.Status)
+	assert.NotNil(t, maisiesSummary.LastAction)
+	assert.Equal(t, "Maisie", maisiesSummary.LastAction.Player)
+	assert.Equal(t, "Little Princess", maisiesSummary.LastAction.Option)
+	assert.Equal(t, "Illiminated", maisiesSummary.LastAction.Action)
 
 	result = game.Illiminate(jenny, "Miss Congeniality")
 	assert.Equal(t, Illiminated, result)
 
 	maisiesSummary = game.Summary(maisie)
-	assert.Equal(t, "Finished", maisiesSummary.Status)
-	assert.Equal(t, "Matilda", maisiesSummary.Winner)
-
-	jennysSummary = game.Summary(jenny)
-	assert.Equal(t, "Finished", jennysSummary.Status)
-	assert.Equal(t, "Matilda", jennysSummary.Winner)
+	assert.NotNil(t, maisiesSummary.LastAction)
+	assert.Equal(t, "Jenny", maisiesSummary.LastAction.Player)
+	assert.Equal(t, "Miss Congeniality", maisiesSummary.LastAction.Option)
+	assert.Equal(t, "Illiminated", maisiesSummary.LastAction.Action)
 }
