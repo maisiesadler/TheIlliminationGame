@@ -11,7 +11,7 @@ type GameSetUp struct {
 	ID          *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Active      bool                `json:"active"`
 	Code        string              `json:"code"`
-	Options     []string            `json:"options"`
+	Options     []*SetUpOption      `json:"options"`
 	Players     []*Player           `json:"players"`
 	CreatedDate time.Time           `json:"createdDate"`
 }
@@ -26,6 +26,15 @@ type Game struct {
 	Players            []*Player           `json:"players"`
 	CreatedDate        time.Time           `json:"createdDate"`
 	Actions            []*Action           `json:"actions"`
+}
+
+// SetUpOption is an option used in the GameSetUp
+type SetUpOption struct {
+	Name        string
+	Description string
+	Link        string
+	AddedByID   *primitive.ObjectID
+	AddedByName string
 }
 
 // Option is an added option
