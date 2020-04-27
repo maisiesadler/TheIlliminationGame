@@ -94,11 +94,13 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 	players := make([]string, len(g.db.Players))
 
 	for i, v := range g.db.Options {
+		canEdit := *v.AddedByID == user.ViewID
 		options[i] = &SetUpOption{
 			Name:        v.Name,
 			Description: v.Description,
 			Link:        v.Link,
 			AddedBy:     v.AddedByName,
+			CanEdit:     canEdit,
 		}
 	}
 

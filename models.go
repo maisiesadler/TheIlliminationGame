@@ -60,4 +60,5 @@ type SetUpOption struct {
 	Description string
 	Link        string
 	AddedBy     string
+	CanEdit     bool
 }

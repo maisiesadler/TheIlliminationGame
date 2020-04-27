@@ -159,3 +159,31 @@ func TestStartedGameSetUpSummaryShowsGame(t *testing.T) {
 	assert.Equal(t, 1, len(summary.Games))
 	assert.Equal(t, game.db.ID, summary.Games[0].ID)
 }
+
+func TestCanUpdateOwnOptions(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
+
+	game := Create(maisie)
+	game.JoinGame(jenny)
+
+	game.AddOption(maisie, "One")
+	game.AddOption(jenny, "Two")
+
+	updates := make(map[string]string)
+	updates["name"] = "OneUpdated"
+	if updated := game.UpdateOption(maisie, 0, updates); !updated {
+		t.Error("Could add update option")
+	}
+
+	game, _ = LoadGameSetUp(game.db.ID)
+
+	assert.Equal(t, "OneUpdated", game.db.Options[0].Name)
+
+	if updated := game.UpdateOption(maisie, 1, updates); updated {
+		t.Error("Could update someone elses options")
+	}
+}
