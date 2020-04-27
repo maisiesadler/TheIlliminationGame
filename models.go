@@ -56,9 +56,9 @@ type LastIlliminated struct {
 
 // SetUpOption is an option used in the GameSetUp
 type SetUpOption struct {
-	Name        string
-	Description string
-	Link        string
-	AddedBy     string
-	CanEdit     bool
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	AddedBy     string `json:"addedBy"`
+	CanEdit     bool   `json:"canEdit"`
 }
