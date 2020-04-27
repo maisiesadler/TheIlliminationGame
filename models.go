@@ -19,7 +19,7 @@ type Game struct {
 type GameSetUpSummary struct {
 	ID           *primitive.ObjectID `json:"id"`
 	Code         string              `json:"code"`
-	Options      []string            `json:"options"`
+	Options      []*SetUpOption      `json:"options"`
 	Players      []string            `json:"players"`
 	UserInGame   bool                `json:"userInGame"`
 	CanBeStarted bool                `json:"canBeStarted"`
@@ -52,4 +52,12 @@ type LastIlliminated struct {
 	Option        string `json:"option"`
 	OldIndex      int    `json:"oldIndex"`
 	mainListIndex int
+}
+
+// SetUpOption is an option used in the GameSetUp
+type SetUpOption struct {
+	Name        string
+	Description string
+	Link        string
+	AddedBy     string
 }

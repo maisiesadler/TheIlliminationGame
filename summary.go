@@ -90,11 +90,16 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 
 // Summary returns a summary of the game setup
 func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummary {
-	options := make([]string, len(g.db.Options))
+	options := make([]*SetUpOption, len(g.db.Options))
 	players := make([]string, len(g.db.Players))
 
 	for i, v := range g.db.Options {
-		options[i] = v
+		options[i] = &SetUpOption{
+			Name:        v.Name,
+			Description: v.Description,
+			Link:        v.Link,
+			AddedBy:     v.AddedByName,
+		}
 	}
 
 	userInGame := false

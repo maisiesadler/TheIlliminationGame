@@ -60,7 +60,7 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 	options := make([]*models.Option, len(g.db.Options))
 	for i, v := range g.db.Options {
 		options[i] = &models.Option{
-			Name: v,
+			Name: v.Name,
 		}
 	}
 
@@ -93,18 +93,54 @@ func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string)
 	option = strings.TrimSpace(option)
 	lowerOption := strings.ToLower(option)
 	for _, o := range g.db.Options {
-		if strings.ToLower(o) == lowerOption {
+		if strings.ToLower(o.Name) == lowerOption {
 			return AORAlreadyAdded
 		}
 	}
 
-	g.db.Options = append(g.db.Options, option)
+	g.db.Options = append(g.db.Options, &models.SetUpOption{
+		Name:        option,
+		AddedByID:   &user.ViewID,
+		AddedByName: user.Nickname,
+	})
 
 	if ok := g.save(); ok {
 		return AORSuccess
 	}
 
 	return AORDidNotSave
+}
+
+// UpdateOption allows a user to add context to their own options
+func (g *GameSetUp) UpdateOption(user *apigateway.AuthenticatedUser, optionIndex int, updates map[string]string) bool {
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	if len(g.db.Options) <= optionIndex {
+		return false
+	}
+
+	option := g.db.Options[optionIndex]
+
+	if *option.AddedByID != user.ViewID {
+		return false
+	}
+
+	if update, ok := updates["name"]; ok {
+		option.Name = update
+	}
+
+	if update, ok := updates["description"]; ok {
+		option.Description = update
+	}
+
+	if update, ok := updates["link"]; ok {
+		option.Link = update
+	}
+
+	return g.save()
 }
 
 // JoinGame returns true if the user has joined the game

@@ -117,6 +117,7 @@ func TestLastActionIsUpdated(t *testing.T) {
 
 	maisiesSummary := game.Summary(maisie)
 	assert.Equal(t, 0, len(maisiesSummary.Actions))
+	assert.Nil(t, maisiesSummary.LastIlliminated)
 
 	result := game.Illiminate(maisie, "Little Princess")
 	assert.Equal(t, Illiminated, result)
@@ -126,6 +127,8 @@ func TestLastActionIsUpdated(t *testing.T) {
 	assert.Equal(t, "Maisie", maisiesSummary.Actions[0].Player)
 	assert.Equal(t, "Little Princess", maisiesSummary.Actions[0].Option)
 	assert.Equal(t, "Illiminated", maisiesSummary.Actions[0].Action)
+	assert.NotNil(t, maisiesSummary.LastIlliminated)
+	assert.Equal(t, 1, maisiesSummary.LastIlliminated.OldIndex)
 
 	result = game.Illiminate(jenny, "Miss Congeniality")
 	assert.Equal(t, Illiminated, result)
@@ -135,4 +138,6 @@ func TestLastActionIsUpdated(t *testing.T) {
 	assert.Equal(t, "Jenny", maisiesSummary.Actions[1].Player)
 	assert.Equal(t, "Miss Congeniality", maisiesSummary.Actions[1].Option)
 	assert.Equal(t, "Illiminated", maisiesSummary.Actions[1].Action)
+	assert.NotNil(t, maisiesSummary.LastIlliminated)
+	assert.Equal(t, 0, maisiesSummary.LastIlliminated.OldIndex)
 }
