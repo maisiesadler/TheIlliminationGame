@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/maisiesadler/theilliminationgame/database"
@@ -61,7 +62,7 @@ func (user *AuthenticatedUser) SetNickname(ctx context.Context, nickname string)
 	}
 
 	userview := ing.(*models.UserView)
-	userview.Nickname = nickname
+	userview.Nickname = strings.TrimSpace(nickname)
 
 	return collection.UpdateByID(ctx, &user.ViewID, userview)
 }
