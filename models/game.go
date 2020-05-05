@@ -57,6 +57,7 @@ const (
 	StateRunning   State = "Running"
 	StateFinished  State = "Finished"
 	StateCancelled State = "Cancelled"
+	StateArchived  State = "Archived"
 )
 
 // Player represents a player
