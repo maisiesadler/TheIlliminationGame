@@ -62,6 +62,18 @@ func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupCode string
 	return findGamesMatchingFilter(user, &andBson)
 }
 
+// FindFinishedGame returns a non archived completed game
+func FindFinishedGame(user *apigateway.AuthenticatedUser) ([]*GameSummary, error) {
+	// { players: { $elemMatch: { "nickname": "Jenny"} } }
+
+	filter := bson.M{"state": "Finished"}
+	idMatch := bson.M{"players": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}
+
+	andBson := []bson.M{filter, idMatch}
+
+	return findGamesMatchingFilter(user, &andBson)
+}
+
 func findGameSetupMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSetUpSummary, error) {
 
 	ok, coll := database.GameSetUp()

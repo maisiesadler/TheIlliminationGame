@@ -141,3 +141,43 @@ func TestLastActionIsUpdated(t *testing.T) {
 	assert.NotNil(t, maisiesSummary.LastIlliminated)
 	assert.Equal(t, 0, maisiesSummary.LastIlliminated.OldIndex)
 }
+
+func TestFinishedGameCanBeArchived(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+	illiminationtesting.SetGameFindWithStatePredicate()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+
+	setup := Create(maisie)
+
+	setup.AddOption(maisie, "Miss Congeniality")
+	setup.AddOption(maisie, "Little Princess")
+
+	game, startResult := setup.Start(maisie)
+	if startResult != Success {
+		t.Errorf("Error starting game: '%v'", startResult)
+		t.FailNow()
+	}
+
+	result := game.Illiminate(maisie, "Little Princess")
+
+	if result != Illiminated {
+		t.Errorf("Could not illiminate film, error: '%v'", result)
+	}
+
+	if game.db.State != models.StateFinished {
+		t.Errorf("Game is not finished, actual: %v", game.db.State)
+	}
+
+	games, err := FindFinishedGame(maisie)
+	assert.Nil(t, err)
+	assert.Len(t, games, 1)
+
+	ok := game.Archive(maisie)
+	assert.True(t, ok, "Game could not be archived")
+
+	games, err = FindFinishedGame(maisie)
+	assert.Nil(t, err)
+	assert.Len(t, games, 0)
+}
