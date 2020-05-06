@@ -60,7 +60,9 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 	options := make([]*models.Option, len(g.db.Options))
 	for i, v := range g.db.Options {
 		options[i] = &models.Option{
-			Name: v.Name,
+			Description: v.Description,
+			Link:        v.Link,
+			Name:        v.Name,
 		}
 	}
 

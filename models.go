@@ -35,7 +35,7 @@ type GameSummary struct {
 	Status          string              `json:"status"`
 	SetUpCode       string              `json:"setUpCode"`
 	UserInGame      bool                `json:"userInGame"`
-	Winner          string              `json:"winner"`
+	Winner          *Winner             `json:"winner"`
 	Actions         []*Action           `json:"actions"`
 	LastIlliminated *LastIlliminated    `json:"lastIlliminated"`
 }
@@ -52,6 +52,13 @@ type LastIlliminated struct {
 	Option        string `json:"option"`
 	OldIndex      int    `json:"oldIndex"`
 	mainListIndex int
+}
+
+// Winner is info about the winning option
+type Winner struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
 }
 
 // SetUpOption is an option used in the GameSetUp

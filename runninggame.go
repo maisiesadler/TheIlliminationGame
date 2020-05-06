@@ -115,22 +115,26 @@ func (g *Game) evaluate() {
 	}
 }
 
-func (g *Game) checkForWinner() (bool, string) {
-	var remaining *string
+func (g *Game) checkForWinner() (bool, *Winner) {
+	var remaining *Winner
 	for _, o := range g.db.Options {
 		if !o.Illiminated {
 			if remaining != nil {
-				return false, ""
+				return false, nil
 			}
 
-			remaining = &o.Name
+			remaining = &Winner{
+				Description: o.Description,
+				Link:        o.Link,
+				Name:        o.Name,
+			}
 		}
 	}
 
 	if remaining != nil {
-		return true, *remaining
+		return true, remaining
 	}
 
 	// Something has gone wrong
-	return false, ""
+	return false, nil
 }

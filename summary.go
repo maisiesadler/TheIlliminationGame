@@ -42,7 +42,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	}
 
 	var status string
-	var winner string
+	var winner *Winner
 	if g.db.State == models.StateRunning {
 		if currentPlayer := g.playersTurn(); currentPlayer != nil {
 			if currentPlayer.ID == user.ViewID {

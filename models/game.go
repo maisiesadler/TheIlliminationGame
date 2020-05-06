@@ -40,7 +40,9 @@ type SetUpOption struct {
 // Option is an added option
 type Option struct {
 	Name        string
+	Description string
 	Illiminated bool
+	Link        string
 }
 
 // Action is an action played in this game
