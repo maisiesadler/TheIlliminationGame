@@ -209,18 +209,20 @@ func testActiveGameForSetUpPredicate(g *models.Game, m primitive.M) bool {
 		return false
 	}
 
-	setupcodeval := (*andval)[1]["setupcode"]
-	if g.SetUpCode != setupcodeval {
-		return false
-	}
-
-	idval := (*andval)[2]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
+	idval := (*andval)[1]["players"].(bson.M)["$elemMatch"].(bson.M)["id"]
 	id := idval.(primitive.ObjectID)
 
 	for _, p := range g.Players {
 		if p.ID == id {
 			return true
 		}
+	}
+
+	if len(*andval) > 2 {
+		p2 := (*andval)[2]
+
+		setupcodeval := p2["setupcode"]
+		return g.SetUpCode == setupcodeval
 	}
 
 	return false
