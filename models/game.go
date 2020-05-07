@@ -21,6 +21,7 @@ type Game struct {
 	ID                 *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	SetUpID            primitive.ObjectID  `json:"setUpID"`
 	SetUpCode          string              `json:"setupCode"`
+	CompletedGameID    *primitive.ObjectID `json:"completedGameID"`
 	State              State               `json:"state"`
 	CurrentPlayerIndex int                 `json:"playerIdx"`
 	Options            []*Option           `json:"options"`
