@@ -1,6 +1,10 @@
 package theilliminationgame
 
 import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
 )
@@ -96,7 +100,15 @@ func (g *Game) evaluate() {
 	if g.db.State == models.StateRunning {
 		if gameHasFinished, _ := g.checkForWinner(); gameHasFinished {
 			g.db.State = models.StateFinished
+			g.db.CompletedGame = createCompletedGame(g)
 		}
+	}
+}
+
+func createCompletedGame(g *Game) *models.CompletedGame {
+	return &models.CompletedGame{
+		CompletedDate: time.Now(),
+		PlayerReviews: make(map[primitive.ObjectID]*models.PlayerReview),
 	}
 }
 

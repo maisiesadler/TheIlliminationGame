@@ -1,6 +1,8 @@
 package theilliminationgame
 
 import (
+	"time"
+
 	"github.com/maisiesadler/theilliminationgame/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -13,11 +15,6 @@ type GameSetUp struct {
 // Game is the running game
 type Game struct {
 	db *models.Game
-}
-
-// CompletedGame is the finished game
-type CompletedGame struct {
-	db *models.CompletedGame
 }
 
 // GameSetUpSummary is a view of the game
@@ -43,6 +40,14 @@ type GameSummary struct {
 	Winner          *Winner             `json:"winner"`
 	Actions         []*Action           `json:"actions"`
 	LastIlliminated *LastIlliminated    `json:"lastIlliminated"`
+	CompletedGame   *CompletedGame      `json:"completedGame"`
+	StartedDate     time.Time           `json:"startedDate"`
+}
+
+// CompletedGame is the running game
+type CompletedGame struct {
+	CompletedDate time.Time                                   `json:"completedDate"`
+	PlayerReviews map[primitive.ObjectID]*models.PlayerReview `json:"playerReview"`
 }
 
 // Action is an action played in the game
