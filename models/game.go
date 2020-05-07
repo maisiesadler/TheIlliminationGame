@@ -19,6 +19,7 @@ type GameSetUp struct {
 // Game is the running game
 type Game struct {
 	ID                 *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	SetUpID            primitive.ObjectID  `json:"setUpID"`
 	SetUpCode          string              `json:"setupCode"`
 	State              State               `json:"state"`
 	CurrentPlayerIndex int                 `json:"playerIdx"`
@@ -32,6 +33,7 @@ type Game struct {
 type CompletedGame struct {
 	ID            *primitive.ObjectID    `json:"id" bson:"_id,omitempty"`
 	SetUpCode     string                 `json:"setupCode"`
+	GameID        primitive.ObjectID     `json:"setUpID"`
 	State         State                  `json:"state"`
 	Players       []*Player              `json:"players"`
 	StartedDate   time.Time              `json:"startedDate"`
