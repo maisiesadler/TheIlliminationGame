@@ -56,8 +56,3 @@ func Game() (bool, ICollection) {
 func GameSetUp() (bool, ICollection) {
 	return CreateCollection("theilliminationgame", "gamesetup")
 }
-
-// CompletedGame returns an ICollection for the mongodb collection completedgames
-func CompletedGame() (bool, ICollection) {
-	return CreateCollection("theilliminationgame", "completedgames")
-}

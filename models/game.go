@@ -21,25 +21,21 @@ type Game struct {
 	ID                 *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	SetUpID            primitive.ObjectID  `json:"setUpID"`
 	SetUpCode          string              `json:"setupCode"`
-	CompletedGameID    *primitive.ObjectID `json:"completedGameID"`
 	State              State               `json:"state"`
 	CurrentPlayerIndex int                 `json:"playerIdx"`
 	Options            []*Option           `json:"options"`
 	Players            []*Player           `json:"players"`
 	CreatedDate        time.Time           `json:"createdDate"`
 	Actions            []*Action           `json:"actions"`
+	CompletedGame      *CompletedGame      `json:"completedGame"`
 }
 
 // CompletedGame is the running game
 type CompletedGame struct {
-	ID            *primitive.ObjectID    `json:"id" bson:"_id,omitempty"`
-	SetUpCode     string                 `json:"setupCode"`
-	GameID        primitive.ObjectID     `json:"setUpID"`
-	State         State                  `json:"state"`
-	Players       []*Player              `json:"players"`
-	StartedDate   time.Time              `json:"startedDate"`
-	CompletedDate time.Time              `json:"completedDate"`
-	Actions       []*CompletedGameAction `json:"actions"`
+	SetUpCode     string    `json:"setupCode"`
+	Players       []*Player `json:"players"`
+	StartedDate   time.Time `json:"startedDate"`
+	CompletedDate time.Time `json:"completedDate"`
 }
 
 // SetUpOption is an option used in the GameSetUp
@@ -66,13 +62,6 @@ type Action struct {
 	Action    string `json:"action"`
 }
 
-// CompletedGameAction is an action played in this game
-type CompletedGameAction struct {
-	PlayerIdx  int    `json:"playerIdx"`
-	OptionName int    `json:"optionName"`
-	Action     string `json:"action"`
-}
-
 // State is the current state of the game
 type State string
 
@@ -80,14 +69,6 @@ const (
 	StateRunning   State = "Running"
 	StateFinished  State = "Finished"
 	StateCancelled State = "Cancelled"
-)
-
-// CompletedGameState is the current state of the completed game
-type CompletedGameState string
-
-const (
-	CompletedGameStateFinished State = "Finished"
-	CompletedGameStateArchived State = "Archived"
 )
 
 // Player represents a player
