@@ -55,21 +55,6 @@ func (g *Game) Cancel(user *apigateway.AuthenticatedUser) bool {
 	return g.save()
 }
 
-// Archive sets a finished game state to archived
-func (g *Game) Archive(user *apigateway.AuthenticatedUser) bool {
-	if g.db.State != models.StateFinished {
-		return false
-	}
-
-	if !g.userIsInGame(user) {
-		return false
-	}
-
-	g.db.State = models.StateArchived
-
-	return g.save()
-}
-
 func (g *Game) illiminate(user *apigateway.AuthenticatedUser, option string) (IlliminationResult, *int) {
 	if g.db.State != models.StateRunning {
 		return NotRunning, nil
