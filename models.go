@@ -15,6 +15,11 @@ type Game struct {
 	db *models.Game
 }
 
+// CompletedGame is the finished game
+type CompletedGame struct {
+	db *models.CompletedGame
+}
+
 // GameSetUpSummary is a view of the game
 type GameSetUpSummary struct {
 	ID           *primitive.ObjectID `json:"id"`
