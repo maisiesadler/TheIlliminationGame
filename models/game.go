@@ -68,6 +68,7 @@ type State string
 const (
 	StateRunning   State = "Running"
 	StateFinished  State = "Finished"
+	StateArchived  State = "Archived"
 	StateCancelled State = "Cancelled"
 )
 
