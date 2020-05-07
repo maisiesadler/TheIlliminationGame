@@ -32,10 +32,8 @@ type Game struct {
 
 // CompletedGame is the running game
 type CompletedGame struct {
-	SetUpCode     string    `json:"setupCode"`
-	Players       []*Player `json:"players"`
-	StartedDate   time.Time `json:"startedDate"`
-	CompletedDate time.Time `json:"completedDate"`
+	CompletedDate time.Time                           `json:"completedDate"`
+	PlayerReview  map[primitive.ObjectID]PlayerReview `json:"playerReview"`
 }
 
 // SetUpOption is an option used in the GameSetUp
@@ -76,4 +74,10 @@ const (
 type Player struct {
 	ID       primitive.ObjectID
 	Nickname string
+}
+
+// PlayerReview represents a players thoughts on the game
+type PlayerReview struct {
+	Thoughts string
+	Image    bool
 }
