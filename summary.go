@@ -60,6 +60,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		if g.db.CompletedGame != nil {
 			completedGame.CompletedDate = g.db.CompletedGame.CompletedDate
 			completedGame.PlayerReviews = g.db.CompletedGame.PlayerReviews
+			_, completedGame.UserHasReviewed = completedGame.PlayerReviews[user.ViewID.Hex()]
 		}
 	}
 

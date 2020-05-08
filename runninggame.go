@@ -100,13 +100,13 @@ func (g *Game) evaluate() {
 		if gameHasFinished, _ := g.checkForWinner(); gameHasFinished {
 			g.db.State = models.StateFinished
 			g.db.CompletedGame = createCompletedGame()
+			g.db.CompletedGame.CompletedDate = time.Now()
 		}
 	}
 }
 
 func createCompletedGame() *models.CompletedGame {
 	return &models.CompletedGame{
-		CompletedDate: time.Now(),
 		PlayerReviews: make(map[string]*models.PlayerReview),
 	}
 }

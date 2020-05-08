@@ -34,7 +34,9 @@ func (g *Game) Review(user *apigateway.AuthenticatedUser, thoughts string) bool 
 
 	viewID := user.ViewID.Hex()
 	if _, ok := g.db.CompletedGame.PlayerReviews[viewID]; !ok {
-		g.db.CompletedGame.PlayerReviews[viewID] = &models.PlayerReview{}
+		g.db.CompletedGame.PlayerReviews[viewID] = &models.PlayerReview{
+			PlayerNickname: user.Nickname,
+		}
 	}
 	g.db.CompletedGame.PlayerReviews[viewID].Thoughts = thoughts
 

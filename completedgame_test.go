@@ -67,6 +67,7 @@ func TestUserCanAddOneReview(t *testing.T) {
 	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "Actually it was rubbish", review.Thoughts)
+	assert.True(t, summary.CompletedGame.UserHasReviewed)
 }
 
 func TestEachUserCanAddOneReview(t *testing.T) {
