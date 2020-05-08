@@ -78,7 +78,6 @@ type Player struct {
 
 // PlayerReview represents a players thoughts on the game
 type PlayerReview struct {
-	PlayerNickname string `json:"playerNickname"`
-	Thoughts       string `json:"thoughts"`
-	Image          bool   `json:"image"`
+	Thoughts string `json:"thoughts"`
+	Image    bool   `json:"image"`
 }
