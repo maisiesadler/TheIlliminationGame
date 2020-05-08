@@ -15,14 +15,20 @@ func LoadGame(id *primitive.ObjectID) (*Game, error) {
 	if !ok {
 		return nil, errors.New("Not connected")
 	}
-	game, err := coll.FindByID(context.TODO(), id, &models.Game{})
+	obj, err := coll.FindByID(context.TODO(), id, &models.Game{})
 	if err != nil {
 		return nil, err
 	}
 
-	return &Game{
-		db: game.(*models.Game),
-	}, nil
+	game := &Game{
+		db: obj.(*models.Game),
+	}
+
+	if game.isFinished() && game.db.CompletedGame == nil {
+		game.db.CompletedGame = createCompletedGame()
+	}
+
+	return game, nil
 }
 
 // LoadGameSetUp creates a playable game set up by ID

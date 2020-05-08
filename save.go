@@ -9,7 +9,7 @@ import (
 	"github.com/maisiesadler/theilliminationgame/database"
 )
 
-func (g *Game) save() bool {
+func (g *Game) save(ctx context.Context) bool {
 
 	ok, coll := database.Game()
 	if !ok {
@@ -18,7 +18,7 @@ func (g *Game) save() bool {
 
 	game := g.db
 
-	id, err := addOrUpdate(context.TODO(), game.ID, game, coll)
+	id, err := addOrUpdate(ctx, game.ID, game, coll)
 	if err == nil {
 		game.ID = id
 		return true
@@ -27,7 +27,7 @@ func (g *Game) save() bool {
 	return false
 }
 
-func (g *GameSetUp) save() bool {
+func (g *GameSetUp) save(ctx context.Context) bool {
 
 	ok, coll := database.GameSetUp()
 	if !ok {
@@ -36,7 +36,7 @@ func (g *GameSetUp) save() bool {
 
 	setup := g.db
 
-	id, err := addOrUpdate(context.TODO(), setup.ID, setup, coll)
+	id, err := addOrUpdate(ctx, setup.ID, setup, coll)
 	if err == nil {
 		setup.ID = id
 		return true
@@ -47,10 +47,10 @@ func (g *GameSetUp) save() bool {
 
 func addOrUpdate(ctx context.Context, id *primitive.ObjectID, doc interface{}, coll database.ICollection) (*primitive.ObjectID, error) {
 	if id == nil {
-		ID, err := coll.InsertOne(context.TODO(), doc)
+		ID, err := coll.InsertOne(ctx, doc)
 		return ID, err
 	}
 
-	err := coll.UpdateByID(context.TODO(), id, doc)
+	err := coll.UpdateByID(ctx, id, doc)
 	return id, err
 }

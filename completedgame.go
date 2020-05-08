@@ -1,6 +1,8 @@
 package theilliminationgame
 
 import (
+	"context"
+
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
 )
@@ -17,7 +19,7 @@ func (g *Game) Archive(user *apigateway.AuthenticatedUser) bool {
 
 	g.db.State = models.StateArchived
 
-	return g.save()
+	return g.save(context.TODO())
 }
 
 // Review allows a player to review the game
@@ -30,14 +32,11 @@ func (g *Game) Review(user *apigateway.AuthenticatedUser, thoughts string) bool 
 		return false
 	}
 
-	if g.db.CompletedGame == nil {
-		g.db.CompletedGame = createCompletedGame(g)
+	viewID := user.ViewID.Hex()
+	if _, ok := g.db.CompletedGame.PlayerReviews[viewID]; !ok {
+		g.db.CompletedGame.PlayerReviews[viewID] = &models.PlayerReview{}
 	}
+	g.db.CompletedGame.PlayerReviews[viewID].Thoughts = thoughts
 
-	if _, ok := g.db.CompletedGame.PlayerReviews[user.ViewID]; !ok {
-		g.db.CompletedGame.PlayerReviews[user.ViewID] = &models.PlayerReview{}
-	}
-	g.db.CompletedGame.PlayerReviews[user.ViewID].Thoughts = thoughts
-
-	return g.save()
+	return g.save(context.TODO())
 }

@@ -1,6 +1,7 @@
 package theilliminationgame
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -23,7 +24,7 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 	}
 
 	gs := asGameSetUp(gameSetUp)
-	gs.save()
+	gs.save(context.TODO())
 
 	return gs
 }
@@ -67,11 +68,12 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 	}
 
 	g.db.Active = false
-	g.save()
+	g.save(context.TODO())
 
 	game := &models.Game{
 		Options:     options,
 		Players:     g.db.Players,
+		SetUpID:     *g.db.ID,
 		SetUpCode:   g.db.Code,
 		State:       models.StateRunning,
 		CreatedDate: time.Now(),
@@ -80,7 +82,7 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 	gm := &Game{
 		db: game,
 	}
-	gm.save()
+	gm.save(context.TODO())
 
 	return gm, Success
 }
@@ -106,7 +108,7 @@ func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string)
 		AddedByName: user.Nickname,
 	})
 
-	if ok := g.save(); ok {
+	if ok := g.save(context.TODO()); ok {
 		return AORSuccess
 	}
 
@@ -142,7 +144,7 @@ func (g *GameSetUp) UpdateOption(user *apigateway.AuthenticatedUser, optionIndex
 		option.Link = update
 	}
 
-	return g.save()
+	return g.save(context.TODO())
 }
 
 // JoinGame returns true if the user has joined the game
@@ -157,7 +159,7 @@ func (g *GameSetUp) JoinGame(user *apigateway.AuthenticatedUser) bool {
 		Nickname: user.Nickname,
 	})
 
-	return g.save()
+	return g.save(context.TODO())
 }
 
 // Deactivate will set the active flag to false
@@ -168,7 +170,7 @@ func (g *GameSetUp) Deactivate(user *apigateway.AuthenticatedUser) bool {
 
 	g.db.Active = false
 
-	return g.save()
+	return g.save(context.TODO())
 }
 
 func (g *GameSetUp) canBeStarted(user *apigateway.AuthenticatedUser) StartResult {

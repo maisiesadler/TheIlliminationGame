@@ -46,8 +46,8 @@ type GameSummary struct {
 
 // CompletedGame is the running game
 type CompletedGame struct {
-	CompletedDate time.Time                                   `json:"completedDate"`
-	PlayerReviews map[primitive.ObjectID]*models.PlayerReview `json:"playerReview"`
+	CompletedDate time.Time                       `json:"completedDate"`
+	PlayerReviews map[string]*models.PlayerReview `json:"playerReview"`
 }
 
 // Action is an action played in the game

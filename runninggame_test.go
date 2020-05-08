@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/maisiesadler/theilliminationgame/illiminationtesting"
 	"github.com/maisiesadler/theilliminationgame/models"
@@ -96,9 +95,6 @@ func TestIlliminatedGamesAreMovedToCorrectArray(t *testing.T) {
 func TestLastActionIsUpdated(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
-	illiminationtesting.SetUserViewFindPredicate(func(uv *models.UserView, m bson.M) bool {
-		return m["username"] == uv.Username
-	})
 
 	maisie := illiminationtesting.TestUser(t, "Maisie")
 	jenny := illiminationtesting.TestUser(t, "Jenny")
@@ -144,9 +140,11 @@ func TestLastActionIsUpdated(t *testing.T) {
 func TestFinishedGameCanBeArchived(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
-	illiminationtesting.SetGameFindWithStatePredicate()
 
 	maisie := illiminationtesting.TestUser(t, "Maisie")
+	games, err := FindFinishedGame(maisie)
+	assert.Nil(t, err)
+	beforelen := len(games)
 
 	setup := Create(maisie)
 
@@ -169,16 +167,16 @@ func TestFinishedGameCanBeArchived(t *testing.T) {
 		t.Errorf("Game is not finished, actual: %v", game.db.State)
 	}
 
-	games, err := FindFinishedGame(maisie)
+	games, err = FindFinishedGame(maisie)
 	assert.Nil(t, err)
-	assert.Len(t, games, 1)
+	assert.Len(t, games, beforelen+1)
 
 	ok := game.Archive(maisie)
 	assert.True(t, ok, "Game could not be archived")
 
 	games, err = FindFinishedGame(maisie)
 	assert.Nil(t, err)
-	assert.Len(t, games, 0)
+	assert.Len(t, games, beforelen)
 }
 
 func TestDescriptionAndLinkVisibleForWinner(t *testing.T) {

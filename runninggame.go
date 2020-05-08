@@ -1,9 +1,8 @@
 package theilliminationgame
 
 import (
+	"context"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
@@ -37,7 +36,7 @@ func (g *Game) Illiminate(user *apigateway.AuthenticatedUser, option string) Ill
 	})
 	g.moveForward()
 
-	if saved := g.save(); !saved {
+	if saved := g.save(context.TODO()); !saved {
 		return DidNotSave
 	}
 
@@ -56,7 +55,7 @@ func (g *Game) Cancel(user *apigateway.AuthenticatedUser) bool {
 
 	g.db.State = models.StateCancelled
 
-	return g.save()
+	return g.save(context.TODO())
 }
 
 func (g *Game) illiminate(user *apigateway.AuthenticatedUser, option string) (IlliminationResult, *int) {
@@ -100,15 +99,15 @@ func (g *Game) evaluate() {
 	if g.db.State == models.StateRunning {
 		if gameHasFinished, _ := g.checkForWinner(); gameHasFinished {
 			g.db.State = models.StateFinished
-			g.db.CompletedGame = createCompletedGame(g)
+			g.db.CompletedGame = createCompletedGame()
 		}
 	}
 }
 
-func createCompletedGame(g *Game) *models.CompletedGame {
+func createCompletedGame() *models.CompletedGame {
 	return &models.CompletedGame{
 		CompletedDate: time.Now(),
-		PlayerReviews: make(map[primitive.ObjectID]*models.PlayerReview),
+		PlayerReviews: make(map[string]*models.PlayerReview),
 	}
 }
 

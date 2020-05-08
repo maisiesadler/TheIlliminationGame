@@ -3,7 +3,6 @@ package theilliminationgame
 import (
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Summary returns a summary of the game
@@ -56,7 +55,8 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	} else {
 		_, winner = g.checkForWinner()
 		status = string(g.db.State)
-		completedGame = &CompletedGame{PlayerReviews: make(map[primitive.ObjectID]*models.PlayerReview)}
+		completedGame = &CompletedGame{}
+		completedGame = &CompletedGame{PlayerReviews: make(map[string]*models.PlayerReview)}
 		if g.db.CompletedGame != nil {
 			completedGame.CompletedDate = g.db.CompletedGame.CompletedDate
 			completedGame.PlayerReviews = g.db.CompletedGame.PlayerReviews
@@ -125,7 +125,7 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 
 	var games []*GameSummary
 	if !g.db.Active {
-		games, _ = FindActiveGameForSetUp(user, g.db.Code)
+		games, _ = FindActiveGameForSetUp(user, *g.db.ID)
 	}
 
 	return &GameSetUpSummary{

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
@@ -50,12 +52,12 @@ func FindActiveGame(user *apigateway.AuthenticatedUser) ([]*GameSummary, error) 
 }
 
 // FindActiveGameForSetUp lets a user browse active games they are in
-func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupCode string) ([]*GameSummary, error) {
+func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupID primitive.ObjectID) ([]*GameSummary, error) {
 	// { players: { $elemMatch: { "nickname": "Jenny"} } }
 
 	filter := bson.M{"state": "Running"}
 	idMatch := bson.M{"players": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}
-	forSetUpCode := bson.M{"setupcode": setupCode}
+	forSetUpCode := bson.M{"setUpID": setupID}
 
 	andBson := []bson.M{filter, idMatch, forSetUpCode}
 

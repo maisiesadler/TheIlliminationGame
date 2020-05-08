@@ -138,7 +138,6 @@ func TestCannotAddDuplicates(t *testing.T) {
 
 func TestStartedGameSetUpSummaryShowsGame(t *testing.T) {
 	illiminationtesting.SetTestCollectionOverride()
-	illiminationtesting.SetGameFindPredicate(testActiveGameForSetUpPredicate)
 
 	maisie := illiminationtesting.TestUser(t, "Maisie")
 

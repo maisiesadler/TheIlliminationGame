@@ -34,7 +34,7 @@ func TestCanAddReview(t *testing.T) {
 	summary := game.Summary(maisie)
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 1)
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID]
+	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "Really great", review.Thoughts)
 }
@@ -64,7 +64,7 @@ func TestUserCanAddOneReview(t *testing.T) {
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 1)
 
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID]
+	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "Actually it was rubbish", review.Thoughts)
 }
@@ -99,15 +99,15 @@ func TestEachUserCanAddOneReview(t *testing.T) {
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 3)
 
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID]
+	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "Actually it was rubbish", review.Thoughts)
 
-	review, ok = summary.CompletedGame.PlayerReviews[jenny.ViewID]
+	review, ok = summary.CompletedGame.PlayerReviews[jenny.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "I fell asleep", review.Thoughts)
 
-	review, ok = summary.CompletedGame.PlayerReviews[dad.ViewID]
+	review, ok = summary.CompletedGame.PlayerReviews[dad.ViewID.Hex()]
 	assert.True(t, ok)
 	assert.Equal(t, "I thought it was great", review.Thoughts)
 }

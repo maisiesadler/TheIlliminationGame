@@ -163,7 +163,7 @@ func TestFindActiveGame(t *testing.T) {
 	coll.DeleteByID(context.TODO(), game.Summary(maisie).ID)
 }
 
-func TestFindActiveGameUsingSetUpCode(t *testing.T) {
+func TestFindActiveGameUsingSetUpID(t *testing.T) {
 
 	illiminationtesting.SetTestCollectionOverride()
 	illiminationtesting.SetGameFindPredicate(testActiveGameForSetUpPredicate)
@@ -182,7 +182,7 @@ func TestFindActiveGameUsingSetUpCode(t *testing.T) {
 	game, startResult := g.Start(maisie)
 	assert.Equal(t, Success, startResult)
 
-	active, err = FindActiveGameForSetUp(maisie, game.db.SetUpCode)
+	active, err = FindActiveGameForSetUp(maisie, *game.db.ID)
 	assert.Nil(t, err)
 
 	assert.Equal(t, beforeLen+1, len(active))
