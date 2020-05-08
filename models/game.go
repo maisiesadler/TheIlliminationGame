@@ -32,8 +32,8 @@ type Game struct {
 
 // CompletedGame is the running game
 type CompletedGame struct {
-	CompletedDate time.Time                            `json:"completedDate"`
-	PlayerReviews map[primitive.ObjectID]*PlayerReview `json:"playerReview"`
+	CompletedDate time.Time                `json:"completedDate"`
+	PlayerReviews map[string]*PlayerReview `json:"playerReview"`
 }
 
 // SetUpOption is an option used in the GameSetUp
