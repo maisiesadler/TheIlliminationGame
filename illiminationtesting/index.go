@@ -56,6 +56,13 @@ var overrides = make(map[string]*TestCollection)
 // SetTestCollectionOverride sets a the database package to use a TestCollection
 func SetTestCollectionOverride() {
 	database.SetOverride(overrideDb)
+
+	// set defaults for FindFilter
+	SetUserViewFindPredicate(func(uv *models.UserView, m bson.M) bool {
+		return m["username"] == uv.Username
+	})
+
+	SetGameFindWithForSetUpPredicate()
 }
 
 // SetGameFindPredicate overrides the logic to get the result for Find
