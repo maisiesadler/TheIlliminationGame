@@ -140,8 +140,10 @@ func TestStartedGameSetUpSummaryShowsGame(t *testing.T) {
 	illiminationtesting.SetTestCollectionOverride()
 
 	maisie := illiminationtesting.TestUser(t, "Maisie")
+	jenny := illiminationtesting.TestUser(t, "Jenny")
 
 	setup := Create(maisie)
+	setup.JoinGame(jenny)
 
 	setup.AddOption(maisie, "One")
 	setup.AddOption(maisie, "Two")
@@ -153,7 +155,7 @@ func TestStartedGameSetUpSummaryShowsGame(t *testing.T) {
 	setup, err := LoadGameSetUp(setup.db.ID)
 	assert.Nil(t, err)
 
-	summary := setup.Summary(maisie)
+	summary := setup.Summary(jenny)
 
 	assert.Equal(t, 1, len(summary.Games))
 	assert.Equal(t, game.db.ID, summary.Games[0].ID)

@@ -55,7 +55,7 @@ func SetGameFindWithForSetUpPredicate() {
 			return true
 		}
 
-		setupidval := (*andval)[2]["setUpID"]
+		setupidval := (*andval)[2]["setupid"]
 		return setupidval == g.SetUpID
 	})
 

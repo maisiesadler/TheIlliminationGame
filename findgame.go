@@ -57,7 +57,7 @@ func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupID primitiv
 
 	filter := bson.M{"state": "Running"}
 	idMatch := bson.M{"players": bson.M{"$elemMatch": bson.M{"id": user.ViewID}}}
-	forSetUpCode := bson.M{"setUpID": setupID}
+	forSetUpCode := bson.M{"setupid": setupID}
 
 	andBson := []bson.M{filter, idMatch, forSetUpCode}
 
