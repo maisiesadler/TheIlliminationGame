@@ -55,12 +55,21 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 	} else {
 		_, winner = g.checkForWinner()
 		status = string(g.db.State)
-		completedGame = &CompletedGame{}
-		completedGame = &CompletedGame{PlayerReviews: make(map[string]*models.PlayerReview)}
+		completedGame = &CompletedGame{PlayerReviews: []PlayerReview{}}
 		if g.db.CompletedGame != nil {
 			completedGame.CompletedDate = g.db.CompletedGame.CompletedDate
-			completedGame.PlayerReviews = g.db.CompletedGame.PlayerReviews
-			_, completedGame.UserHasReviewed = completedGame.PlayerReviews[user.ViewID.Hex()]
+			for userID, review := range g.db.CompletedGame.PlayerReviews {
+				r := PlayerReview{
+					PlayerNickname: review.PlayerNickname,
+					Thoughts:       review.Thoughts,
+					Image:          review.Image,
+				}
+				if userID == user.ViewID.Hex() {
+					completedGame.UserHasReviewed = true
+					r.IsUsersReview = true
+				}
+				completedGame.PlayerReviews = append(completedGame.PlayerReviews, r)
+			}
 		}
 	}
 

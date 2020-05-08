@@ -31,12 +31,15 @@ func TestCanAddReview(t *testing.T) {
 
 	// Assert
 	assert.True(t, ok)
+	game, err = LoadGame(id)
+	assert.Nil(t, err)
+	assert.NotNil(t, game)
 	summary := game.Summary(maisie)
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 1)
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
-	assert.True(t, ok)
+	review := summary.CompletedGame.PlayerReviews[0]
 	assert.Equal(t, "Really great", review.Thoughts)
+	assert.Equal(t, "Maisie", review.PlayerNickname)
 }
 
 func TestUserCanAddOneReview(t *testing.T) {
@@ -64,9 +67,9 @@ func TestUserCanAddOneReview(t *testing.T) {
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 1)
 
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
-	assert.True(t, ok)
+	review := summary.CompletedGame.PlayerReviews[0]
 	assert.Equal(t, "Actually it was rubbish", review.Thoughts)
+	assert.Equal(t, "Maisie", review.PlayerNickname)
 	assert.True(t, summary.CompletedGame.UserHasReviewed)
 }
 
@@ -100,17 +103,20 @@ func TestEachUserCanAddOneReview(t *testing.T) {
 	assert.NotNil(t, summary.CompletedGame)
 	assert.Len(t, summary.CompletedGame.PlayerReviews, 3)
 
-	review, ok := summary.CompletedGame.PlayerReviews[maisie.ViewID.Hex()]
-	assert.True(t, ok)
-	assert.Equal(t, "Actually it was rubbish", review.Thoughts)
+	contains := func(reviews []PlayerReview, nickname string, thoughts string) bool {
+		for _, v := range reviews {
+			if v.PlayerNickname == nickname {
+				assert.Equal(t, thoughts, v.Thoughts)
+				return true
+			}
+		}
 
-	review, ok = summary.CompletedGame.PlayerReviews[jenny.ViewID.Hex()]
-	assert.True(t, ok)
-	assert.Equal(t, "I fell asleep", review.Thoughts)
+		return false
+	}
 
-	review, ok = summary.CompletedGame.PlayerReviews[dad.ViewID.Hex()]
-	assert.True(t, ok)
-	assert.Equal(t, "I thought it was great", review.Thoughts)
+	assert.True(t, contains(summary.CompletedGame.PlayerReviews, "Maisie", "Actually it was rubbish"))
+	assert.True(t, contains(summary.CompletedGame.PlayerReviews, "Jenny", "I fell asleep"))
+	assert.True(t, contains(summary.CompletedGame.PlayerReviews, "Dad", "I thought it was great"))
 }
 
 func TestCannotAddReviewToGameNotIn(t *testing.T) {
