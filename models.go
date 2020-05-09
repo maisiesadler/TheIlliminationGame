@@ -53,10 +53,10 @@ type CompletedGame struct {
 
 // PlayerReview is the running game
 type PlayerReview struct {
-	PlayerNickname string `json:"playerNickname"`
-	Thoughts       string `json:"thoughts"`
-	Image          bool   `json:"image"`
-	IsUsersReview  bool   `json:"isUsersReview"`
+	PlayerNickname string  `json:"playerNickname"`
+	Thoughts       string  `json:"thoughts"`
+	ImageURL       *string `json:"imageUrl"`
+	IsUsersReview  bool    `json:"isUsersReview"`
 }
 
 // Action is an action played in the game

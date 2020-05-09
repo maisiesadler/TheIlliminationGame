@@ -3,6 +3,7 @@ package theilliminationgame
 import (
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/models"
+	"github.com/maisiesadler/theilliminationgame/reviewphotos"
 )
 
 // Summary returns a summary of the game
@@ -62,7 +63,12 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 				r := PlayerReview{
 					PlayerNickname: review.PlayerNickname,
 					Thoughts:       review.Thoughts,
-					Image:          review.Image,
+				}
+				if review.Image {
+					key := g.db.ID.Hex() + "_" + userID
+					if imageurl, err := reviewphotos.CreatePresignedURL("get", key); err == nil {
+						r.ImageURL = &imageurl
+					}
 				}
 				if userID == user.ViewID.Hex() {
 					completedGame.UserHasReviewed = true
