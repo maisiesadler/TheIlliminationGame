@@ -42,3 +42,24 @@ func (g *Game) Review(user *apigateway.AuthenticatedUser, thoughts string) bool 
 
 	return g.save(context.TODO())
 }
+
+// UpdateHasImage allows a player to add an image to their review
+func (g *Game) UpdateHasImage(user *apigateway.AuthenticatedUser, hasImage bool) bool {
+	if g.db.State != models.StateFinished {
+		return false
+	}
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	viewID := user.ViewID.Hex()
+	if _, ok := g.db.CompletedGame.PlayerReviews[viewID]; !ok {
+		g.db.CompletedGame.PlayerReviews[viewID] = &models.PlayerReview{
+			PlayerNickname: user.Nickname,
+		}
+	}
+	g.db.CompletedGame.PlayerReviews[viewID].Image = hasImage
+
+	return g.save(context.TODO())
+}
