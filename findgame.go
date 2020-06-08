@@ -24,7 +24,7 @@ func FindActiveGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSummar
 
 	andBson := []bson.M{filter, idMatch}
 
-	return findGameSetupMatchingFilter(user, &andBson)
+	return FindGameSetupMatchingFilter(user, &andBson)
 }
 
 // FindAvailableGameSetUp lets a user browse active games they are not in
@@ -36,7 +36,7 @@ func FindAvailableGameSetUp(user *apigateway.AuthenticatedUser) ([]*GameSetUpSum
 
 	andBson := []bson.M{filter, idMatch}
 
-	return findGameSetupMatchingFilter(user, &andBson)
+	return FindGameSetupMatchingFilter(user, &andBson)
 }
 
 // FindActiveGame lets a user browse active games they are in
@@ -48,7 +48,7 @@ func FindActiveGame(user *apigateway.AuthenticatedUser) ([]*GameSummary, error) 
 
 	andBson := []bson.M{filter, idMatch}
 
-	return findGamesMatchingFilter(user, &andBson)
+	return FindGamesMatchingFilter(user, &andBson)
 }
 
 // FindActiveGameForSetUp lets a user browse active games they are in
@@ -61,7 +61,7 @@ func FindActiveGameForSetUp(user *apigateway.AuthenticatedUser, setupID primitiv
 
 	andBson := []bson.M{filter, idMatch, forSetUpCode}
 
-	return findGamesMatchingFilter(user, &andBson)
+	return FindGamesMatchingFilter(user, &andBson)
 }
 
 // FindFinishedGame returns a non archived completed game
@@ -73,10 +73,11 @@ func FindFinishedGame(user *apigateway.AuthenticatedUser) ([]*GameSummary, error
 
 	andBson := []bson.M{filter, idMatch}
 
-	return findGamesMatchingFilter(user, &andBson)
+	return FindGamesMatchingFilter(user, &andBson)
 }
 
-func findGameSetupMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSetUpSummary, error) {
+// FindGameSetupMatchingFilter finds all game setups matching the given filters
+func FindGameSetupMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSetUpSummary, error) {
 
 	ok, coll := database.GameSetUp()
 	if !ok {
@@ -104,7 +105,8 @@ func findGameSetupMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]b
 	return games, err
 }
 
-func findGamesMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSummary, error) {
+// FindGamesMatchingFilter finds all games matching the given filters
+func FindGamesMatchingFilter(user *apigateway.AuthenticatedUser, filter *[]bson.M) ([]*GameSummary, error) {
 
 	ok, coll := database.Game()
 	if !ok {

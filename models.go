@@ -44,14 +44,14 @@ type GameSummary struct {
 	StartedDate     time.Time           `json:"startedDate"`
 }
 
-// CompletedGame is the running game
+// CompletedGame is extra info for a completed game
 type CompletedGame struct {
 	CompletedDate   time.Time      `json:"completedDate"`
 	PlayerReviews   []PlayerReview `json:"playerReviews"`
 	UserHasReviewed bool           `json:"userHasReviewed"`
 }
 
-// PlayerReview is the running game
+// PlayerReview is a users thoughts on a completed game
 type PlayerReview struct {
 	PlayerNickname string  `json:"playerNickname"`
 	Thoughts       string  `json:"thoughts"`
