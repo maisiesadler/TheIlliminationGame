@@ -64,6 +64,7 @@ type Action struct {
 	Player string `json:"player"`
 	Option string `json:"option"`
 	Action string `json:"action"`
+	Link   string `json:"link"`
 }
 
 // LastIlliminated is the last illiminated option

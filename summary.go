@@ -93,6 +93,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 				Player: player.Nickname,
 				Option: option.Name,
 				Action: action.Action,
+				Link:   option.Link,
 			})
 		}
 	}
