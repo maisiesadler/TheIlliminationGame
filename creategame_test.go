@@ -188,3 +188,34 @@ func TestCanUpdateOwnOptions(t *testing.T) {
 		t.Error("Could update someone elses options")
 	}
 }
+
+func TestCanAddTag(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+
+	game := Create(maisie)
+
+	if ok := game.AddTag(maisie, "pants"); !ok {
+		t.Error("Could not add tag")
+	}
+
+	assert.Equal(t, 1, len(game.db.Tags))
+}
+
+func TestCanRemoveTag(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+
+	game := Create(maisie)
+	game.AddTag(maisie, "pants")
+
+	if ok := game.RemoveTag(maisie, "pants"); !ok {
+		t.Error("Could not remove tag")
+	}
+
+	assert.Equal(t, 0, len(game.db.Tags))
+}

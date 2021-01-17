@@ -49,6 +49,7 @@ const (
 	AORUserNotInGame AddOptionResult = "User not in game"
 	AORAlreadyAdded  AddOptionResult = "Option already added"
 	AORDidNotSave    AddOptionResult = "Did not save"
+	AOREmpty         AddOptionResult = "Option is empty"
 )
 
 // Start validates the inputs and sets the status to Running
@@ -98,6 +99,10 @@ func (g *GameSetUp) AddDetailedOption(user *apigateway.AuthenticatedUser, option
 
 	if !g.userIsInGame(user) {
 		return AORUserNotInGame
+	}
+
+	if len(option) == 0 {
+		return AOREmpty
 	}
 
 	option = strings.TrimSpace(option)
@@ -151,6 +156,52 @@ func (g *GameSetUp) UpdateOption(user *apigateway.AuthenticatedUser, optionIndex
 	if update, ok := updates["link"]; ok {
 		option.Link = update
 	}
+
+	return g.save(context.TODO())
+}
+
+// AddTag allows a user to add a tag to a game
+func (g *GameSetUp) AddTag(user *apigateway.AuthenticatedUser, tag string) bool {
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	if len(tag) == 0 {
+		return false
+	}
+
+	tag = strings.TrimSpace(tag)
+	lowerTag := strings.ToLower(tag)
+	for _, t := range g.db.Tags {
+		if strings.ToLower(t) == lowerTag {
+			return false
+		}
+	}
+
+	g.db.Tags = append(g.db.Tags, tag)
+
+	return g.save(context.TODO())
+}
+
+// RemoveTag allows a user to remove a tag to a game
+func (g *GameSetUp) RemoveTag(user *apigateway.AuthenticatedUser, tag string) bool {
+
+	if !g.userIsInGame(user) {
+		return false
+	}
+
+	tag = strings.TrimSpace(tag)
+	lowerTag := strings.ToLower(tag)
+
+	tags := []string{}
+	for _, t := range g.db.Tags {
+		if strings.ToLower(t) != lowerTag {
+			tags = append(tags, t)
+		}
+	}
+
+	g.db.Tags = tags
 
 	return g.save(context.TODO())
 }
