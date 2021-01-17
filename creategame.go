@@ -78,6 +78,7 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 		SetUpCode:   g.db.Code,
 		State:       models.StateRunning,
 		CreatedDate: time.Now(),
+		Tags:        g.db.Tags,
 	}
 
 	gm := &Game{

@@ -226,3 +226,41 @@ func runTestGame(t *testing.T, users []*apigateway.AuthenticatedUser) *primitive
 
 	return summary.ID
 }
+
+func TestCanAddTagFromGame(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+
+	setup := Create(maisie)
+	setup.AddOption(maisie, "one")
+	setup.AddOption(maisie, "two")
+
+	game, _ := setup.Start(maisie)
+
+	if ok := game.AddTag(maisie, "pants"); !ok {
+		t.Error("Could not add tag")
+	}
+
+	assert.Equal(t, 1, len(game.db.Tags))
+}
+
+func TestCanRemoveTagFromGame(t *testing.T) {
+
+	illiminationtesting.SetTestCollectionOverride()
+
+	maisie := illiminationtesting.TestUser(t, "Maisie")
+
+	setup := Create(maisie)
+	setup.AddOption(maisie, "one")
+	setup.AddOption(maisie, "two")
+
+	game, _ := setup.Start(maisie)
+
+	if ok := game.RemoveTag(maisie, "pants"); !ok {
+		t.Error("Could not remove tag")
+	}
+
+	assert.Equal(t, 0, len(game.db.Tags))
+}
