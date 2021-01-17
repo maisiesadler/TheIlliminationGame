@@ -98,6 +98,17 @@ func (g *GameSetUp) AddOption(user *apigateway.AuthenticatedUser, option string)
 // AddDetailedOption lets a player add an option if the game has not started
 func (g *GameSetUp) AddDetailedOption(user *apigateway.AuthenticatedUser, option string, description string, link string) AddOptionResult {
 
+	if result := g.addDetailedOptionInner(user, option, description, link); result != AORSuccess {
+		return result
+	}
+
+	AddUserOption(user, option, description, link, g.db.Tags)
+
+	return AORSuccess
+}
+
+func (g *GameSetUp) addDetailedOptionInner(user *apigateway.AuthenticatedUser, option string, description string, link string) AddOptionResult {
+
 	if !g.userIsInGame(user) {
 		return AORUserNotInGame
 	}

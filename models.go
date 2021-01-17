@@ -17,6 +17,11 @@ type Game struct {
 	db *models.Game
 }
 
+// UserOption is a user option
+type UserOption struct {
+	db *models.UserOption
+}
+
 // GameSetUpSummary is a view of the game
 type GameSetUpSummary struct {
 	ID           *primitive.ObjectID `json:"id"`

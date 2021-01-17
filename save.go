@@ -45,6 +45,24 @@ func (g *GameSetUp) save(ctx context.Context) bool {
 	return false
 }
 
+func (g *UserOption) save(ctx context.Context) bool {
+
+	ok, coll := database.UserOptions()
+	if !ok {
+		return false
+	}
+
+	setup := g.db
+
+	id, err := addOrUpdate(ctx, setup.ID, setup, coll)
+	if err == nil {
+		setup.ID = id
+		return true
+	}
+	fmt.Printf("Error saving user options: '%v'", err)
+	return false
+}
+
 func addOrUpdate(ctx context.Context, id *primitive.ObjectID, doc interface{}, coll database.ICollection) (*primitive.ObjectID, error) {
 	if id == nil {
 		ID, err := coll.InsertOne(ctx, doc)

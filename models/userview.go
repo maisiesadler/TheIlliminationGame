@@ -15,8 +15,8 @@ type UserView struct {
 type UserOption struct {
 	ID          *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	UserID      primitive.ObjectID  `json:"userId"`
-	Name        string
-	Description string
-	Link        string
-	Tags        []string `json:"tags"`
+	Name        string              `json:"name"`
+	Description string              `json:"description"`
+	Link        string              `json:"link"`
+	Tags        []string            `json:"tags"`
 }
