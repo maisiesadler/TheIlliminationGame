@@ -31,6 +31,7 @@ type GameSetUpSummary struct {
 	UserInGame   bool                `json:"userInGame"`
 	CanBeStarted bool                `json:"canBeStarted"`
 	Games        []*GameSummary      `json:"games"`
+	Tags         []string            `json:"tags"`
 }
 
 // GameSummary is a view of the game
@@ -47,6 +48,7 @@ type GameSummary struct {
 	LastIlliminated *LastIlliminated    `json:"lastIlliminated"`
 	CompletedGame   *CompletedGame      `json:"completedGame"`
 	StartedDate     time.Time           `json:"startedDate"`
+	Tags            []string            `json:"tags"`
 }
 
 // CompletedGame is extra info for a completed game

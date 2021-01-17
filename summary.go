@@ -111,6 +111,7 @@ func (g *Game) Summary(user *apigateway.AuthenticatedUser) *GameSummary {
 		LastIlliminated: lastIlliminated,
 		StartedDate:     g.db.CreatedDate,
 		CompletedGame:   completedGame,
+		Tags:            g.db.Tags,
 	}
 }
 
@@ -153,5 +154,6 @@ func (g *GameSetUp) Summary(user *apigateway.AuthenticatedUser) *GameSetUpSummar
 		Players:      players,
 		UserInGame:   userInGame,
 		CanBeStarted: canBeStarted,
+		Tags:         g.db.Tags,
 	}
 }
