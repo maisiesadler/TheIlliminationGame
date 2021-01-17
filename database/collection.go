@@ -61,3 +61,8 @@ func GameSetUp() (bool, ICollection) {
 func Groups() (bool, ICollection) {
 	return CreateCollection("theilliminationgame", "groups")
 }
+
+// UserOptions returns an ICollection for the mongodb collection useroptions
+func UserOptions() (bool, ICollection) {
+	return CreateCollection("theilliminationgame", "useroptions")
+}
