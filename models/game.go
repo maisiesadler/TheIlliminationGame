@@ -14,6 +14,7 @@ type GameSetUp struct {
 	Options     []*SetUpOption      `json:"options"`
 	Players     []*Player           `json:"players"`
 	CreatedDate time.Time           `json:"createdDate"`
+	Tags        []string
 }
 
 // Game is the running game
@@ -28,9 +29,10 @@ type Game struct {
 	CreatedDate        time.Time           `json:"createdDate"`
 	Actions            []*Action           `json:"actions"`
 	CompletedGame      *CompletedGame      `json:"completedGame"`
+	Tags               []string
 }
 
-// CompletedGame is the running game
+// CompletedGame is a completed game
 type CompletedGame struct {
 	CompletedDate time.Time                `json:"completedDate"`
 	PlayerReviews map[string]*PlayerReview `json:"playerReview"`
