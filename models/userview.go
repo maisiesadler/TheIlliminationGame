@@ -11,17 +11,12 @@ type UserView struct {
 	Nickname string              `json:"nickname"`
 }
 
-// UserOptions represents the users options
-type UserOptions struct {
-	ID     *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	UserID primitive.ObjectID  `json:"userId"`
-	Option UserOption          `json:"option"`
-	Tags   []string            `json:"tags"`
-}
-
-// UserOption is an option used in UserOptions
+// UserOption represents the users options
 type UserOption struct {
+	ID          *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	UserID      primitive.ObjectID  `json:"userId"`
 	Name        string
 	Description string
 	Link        string
+	Tags        []string `json:"tags"`
 }
