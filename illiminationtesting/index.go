@@ -102,9 +102,9 @@ func SetUserViewFindPredicate(predicate func(*models.UserView, bson.M) bool) boo
 }
 
 // SetUserOptionsFindPredicate overrides the logic to get the result for Find
-func SetUserOptionsFindPredicate(predicate func(*models.UserOptions, bson.M) bool) bool {
+func SetUserOptionsFindPredicate(predicate func(*models.UserOption, bson.M) bool) bool {
 	fn := func(value interface{}, filter bson.M) bool {
-		uv := value.(*models.UserOptions)
+		uv := value.(*models.UserOption)
 		return predicate(uv, filter)
 	}
 
