@@ -102,7 +102,7 @@ func (g *GameSetUp) AddDetailedOption(user *apigateway.AuthenticatedUser, option
 		return result
 	}
 
-	AddUserOption(user, option, description, link, g.db.Tags)
+	AddUserOption(user, option, description, link, *g.db.ID, g.db.Tags)
 
 	return AORSuccess
 }
