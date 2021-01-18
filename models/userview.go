@@ -19,4 +19,5 @@ type UserOption struct {
 	Description string              `json:"description"`
 	Link        string              `json:"link"`
 	Tags        []string            `json:"tags"`
+	GameSetupID primitive.ObjectID  `json:"gameSetupId"`
 }
