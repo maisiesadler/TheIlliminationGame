@@ -4,33 +4,12 @@ import (
 	"context"
 	"errors"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"github.com/maisiesadler/theilliminationgame/apigateway"
 	"github.com/maisiesadler/theilliminationgame/database"
 	"github.com/maisiesadler/theilliminationgame/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func AddUserOption(user *apigateway.AuthenticatedUser, option string, description string, link string, gameSetupId primitive.ObjectID, tags []string) error {
-
-	uo := &models.UserOption{
-		UserID:      user.ViewID,
-		Name:        option,
-		Description: description,
-		Link:        link,
-		Tags:        tags,
-		GameSetupID: gameSetupId,
-	}
-
-	o := &UserOption{
-		db: uo,
-	}
-	o.save(context.TODO())
-
-	return nil
-}
 
 func FindAllOptionsForUser(user *apigateway.AuthenticatedUser) ([]*UserOptionSummary, error) {
 	options, err := findAllOptionsForUser(user)
@@ -91,41 +70,45 @@ func findAllOptionsForUser(user *apigateway.AuthenticatedUser) ([]*models.UserOp
 	return options, err
 }
 
-func (game *Game) RebuildUserOptions(user *apigateway.AuthenticatedUser) error {
+func (gameSetup *GameSetUp) AddAllUserOptions(user *apigateway.AuthenticatedUser) error {
 
-	gameSetup, err := LoadGameSetUp(&game.db.SetUpID)
-	if err != nil {
-		return err
-	}
-
-	gameSetup.removeUserOptions(user)
+	// gameSetup.removeUserOptions(user)
 
 	for _, o := range gameSetup.db.Options {
 		if *o.AddedByID == user.ViewID {
-			AddUserOption(user, o.Name, o.Description, o.Link, *gameSetup.db.ID, game.db.Tags)
+			uo := &models.UserOption{
+				UserID:      user.ViewID,
+				Name:        o.Name,
+				Description: o.Description,
+				Link:        o.Link,
+				Tags:        gameSetup.db.Tags,
+				GameSetupID: *gameSetup.db.ID,
+			}
+
+			o := &UserOption{
+				db: uo,
+			}
+			o.save(context.TODO())
 		}
 	}
 
 	return nil
 }
 
-func (gameSetup *GameSetUp) RebuildUserOptions(user *apigateway.AuthenticatedUser) error {
+func (uo *UserOption) Remove(user *apigateway.AuthenticatedUser) error {
 
-	gameSetup.removeUserOptions(user)
-
-	for _, o := range gameSetup.db.Options {
-		if *o.AddedByID == user.ViewID {
-			AddUserOption(user, o.Name, o.Description, o.Link, *gameSetup.db.ID, gameSetup.db.Tags)
-		}
+	ok, coll := database.UserOptions()
+	if !ok {
+		return errors.New("Not connected")
 	}
 
-	return nil
+	return coll.DeleteByID(context.Background(), uo.db.ID)
 }
 
 func (gameSetup *GameSetUp) removeUserOptions(user *apigateway.AuthenticatedUser) error {
 
 	gameSetUpID := bson.M{"gameSetupId": gameSetup.db.ID}
-	idMatch := bson.M{"userId": user.ViewID}
+	idMatch := bson.M{"userid": user.ViewID}
 
 	andBson := []bson.M{gameSetUpID, idMatch}
 

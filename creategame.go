@@ -86,6 +86,8 @@ func (g *GameSetUp) Start(user *apigateway.AuthenticatedUser) (*Game, StartResul
 	}
 	gm.save(context.TODO())
 
+	g.AddAllUserOptions(user)
+
 	return gm, Success
 }
 
@@ -101,8 +103,6 @@ func (g *GameSetUp) AddDetailedOption(user *apigateway.AuthenticatedUser, option
 	if result := g.addDetailedOptionInner(user, option, description, link); result != AORSuccess {
 		return result
 	}
-
-	AddUserOption(user, option, description, link, *g.db.ID, g.db.Tags)
 
 	return AORSuccess
 }
