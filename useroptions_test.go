@@ -36,14 +36,28 @@ func TestUserOptionIsAddedToTable(t *testing.T) {
 	assert.GreaterOrEqual(t, len(options), 2)
 }
 
-// func TestGetUserOptions(t *testing.T) {
+// func TestRebuild(t *testing.T) {
+
+// 	// maisie = 5e898701ee4d78495f600f2b
 
 // 	// Arrange
-// 	testmaisie, _ := primitive.ObjectIDFromHex("5ea6b4659c550d9390f8719c")
+// 	testmaisie, _ := primitive.ObjectIDFromHex("5e898701ee4d78495f600f2b")
 // 	maisie := &apigateway.AuthenticatedUser{
 // 		// Nickname: view.Nickname,
 // 		// Username: view.Username,
 // 		ViewID: testmaisie,
+// 	}
+// 	games, _ := FindFinishedGame(maisie)
+// 	for _, i := range games {
+// 		game, err := LoadGame(i.ID)
+// 		assert.Nil(t, err)
+
+// 		setup, err := LoadGameSetUp(&game.db.SetUpID)
+// 		if err == nil {
+// 			err = setup.AddAllUserOptions(maisie)
+
+// 			assert.Nil(t, err)
+// 		}
 // 	}
 
 // 	uo, _ := FindAllOptionsForUser(maisie)

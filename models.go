@@ -24,6 +24,7 @@ type UserOption struct {
 
 // UserOptionSummary is a view of the users options
 type UserOptionSummary struct {
+	ID           primitive.ObjectID   `json:"id"`
 	Name         string               `json:"name"`
 	Description  string               `json:"description"`
 	Link         string               `json:"link"`
