@@ -23,7 +23,9 @@ func Create(user *apigateway.AuthenticatedUser) *GameSetUp {
 		CreatedDate: time.Now(),
 	}
 
-	gs := asGameSetUp(gameSetUp)
+	gs := &GameSetUp{
+		db: gameSetUp,
+	}
 	gs.save(context.TODO())
 
 	return gs

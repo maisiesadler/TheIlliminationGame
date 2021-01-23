@@ -42,11 +42,23 @@ func LoadGameSetUp(id *primitive.ObjectID) (*GameSetUp, error) {
 		return nil, err
 	}
 
-	return asGameSetUp(gameSetUp.(*models.GameSetUp)), nil
+	return &GameSetUp{
+		db: gameSetUp.(*models.GameSetUp),
+	}, nil
 }
 
-func asGameSetUp(gameSetup *models.GameSetUp) *GameSetUp {
-	return &GameSetUp{
-		db: gameSetup,
+// LoadUserOption creates an interactable user option
+func LoadUserOption(id *primitive.ObjectID) (*UserOption, error) {
+	ok, coll := database.UserOptions()
+	if !ok {
+		return nil, errors.New("Not connected")
 	}
+	uo, err := coll.FindByID(context.TODO(), id, &models.UserOption{})
+	if err != nil {
+		return nil, err
+	}
+
+	return &UserOption{
+		db: uo.(*models.UserOption),
+	}, nil
 }
