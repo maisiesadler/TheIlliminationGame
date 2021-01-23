@@ -3,6 +3,7 @@ package theilliminationgame
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
@@ -37,7 +38,15 @@ func FindAllOptionsForUser(user *apigateway.AuthenticatedUser) ([]*UserOptionSum
 
 func (uo *UserOption) UpdateUserOption(user *apigateway.AuthenticatedUser, updates map[string]string) error {
 
+	if uo.db.UserID != user.ViewID {
+		return errors.New("Cannot update another users options")
+	}
+
+	fmt.Println("Updating user options")
+
 	for k, v := range updates {
+		fmt.Println("Updating " + k)
+
 		if k == "name" {
 			uo.db.Name = v
 		} else if k == "link" {
@@ -236,6 +245,10 @@ func getNameOrLinkBson(name string, link string) bson.M {
 }
 
 func (uo *UserOption) Remove(user *apigateway.AuthenticatedUser) error {
+
+	if uo.db.UserID != user.ViewID {
+		return errors.New("Cannot update another users options")
+	}
 
 	ok, coll := database.UserOptions()
 	if !ok {
