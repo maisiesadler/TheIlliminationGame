@@ -3,7 +3,6 @@ package theilliminationgame
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/maisiesadler/theilliminationgame/apigateway"
@@ -22,18 +21,26 @@ func FindAllOptionsForUser(user *apigateway.AuthenticatedUser) ([]*UserOptionSum
 	summaries := []*UserOptionSummary{}
 
 	for _, option := range options {
-		summary := &UserOptionSummary{
-			ID:           *option.ID,
-			Name:         option.Name,
-			Description:  option.Description,
-			Link:         option.Link,
-			Tags:         option.Tags,
-			GameSetupIDs: option.GameSetupIDs,
+		uo := &UserOption{
+			db: option,
 		}
+		summary := uo.Summary(user)
 		summaries = append(summaries, summary)
 	}
 
 	return summaries, nil
+}
+
+func (uo *UserOption) Summary(user *apigateway.AuthenticatedUser) *UserOptionSummary {
+
+	return &UserOptionSummary{
+		ID:           *uo.db.ID,
+		Name:         uo.db.Name,
+		Description:  uo.db.Description,
+		Link:         uo.db.Link,
+		Tags:         uo.db.Tags,
+		GameSetupIDs: uo.db.GameSetupIDs,
+	}
 }
 
 func (uo *UserOption) UpdateUserOption(user *apigateway.AuthenticatedUser, updates map[string]string) error {
@@ -42,11 +49,7 @@ func (uo *UserOption) UpdateUserOption(user *apigateway.AuthenticatedUser, updat
 		return errors.New("Cannot update another users options")
 	}
 
-	fmt.Println("Updating user options")
-
 	for k, v := range updates {
-		fmt.Println("Updating " + k)
-
 		if k == "name" {
 			uo.db.Name = v
 		} else if k == "link" {
@@ -55,7 +58,7 @@ func (uo *UserOption) UpdateUserOption(user *apigateway.AuthenticatedUser, updat
 			uo.db.Description = v
 		} else if k == "tag_add" {
 			v = strings.ToLower(v)
-			if !contains(uo.db.Tags, v) {
+			if len(v) > 0 && !contains(uo.db.Tags, v) {
 				uo.db.Tags = append(uo.db.Tags, v)
 			}
 		} else if k == "tag_remove" {
