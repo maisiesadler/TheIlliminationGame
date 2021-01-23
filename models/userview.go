@@ -20,5 +20,5 @@ type UserOption struct {
 	Link        string              `json:"link"`
 	Tags        []string            `json:"tags"`
 	GameSetupID primitive.ObjectID  `json:"gameSetupId"`
-	IsOverride  string              `json:"isOverride"`
+	IsOverride  bool                `json:"isOverride"`
 }
